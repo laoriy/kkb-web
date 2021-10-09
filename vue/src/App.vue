@@ -1,13 +1,21 @@
 <template>
-  <h2>hello world</h2>
+    <LInput v-model="avalue" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import LInput from './components/form/LInput.vue';
+import { defineComponent, reactive, toRefs } from 'vue';
 
 export default defineComponent({
-  name: "App",
+    components: { LInput },
+    name: 'App',
+    setup() {
+        const state = reactive({
+            avalue: '123',
+        });
+        return {
+            ...toRefs(state),
+        };
+    },
 });
 </script>
-
-<style lang="less"></style>
