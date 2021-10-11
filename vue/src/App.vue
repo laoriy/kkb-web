@@ -1,21 +1,13 @@
 <template>
-    <LInput v-model="avalue" />
+    <FormComponent />
 </template>
 
 <script lang="ts">
-import LInput from './components/form/LInput.vue';
-import { defineComponent, reactive, toRefs } from 'vue';
+import { defineComponent } from 'vue';
+import FormComponent from '@/components/form/index.vue';
 
 export default defineComponent({
-    components: { LInput },
+    components: { FormComponent },
     name: 'App',
-    setup() {
-        const state = reactive({
-            avalue: '123',
-        });
-        return {
-            ...toRefs(state),
-        };
-    },
 });
 </script>
