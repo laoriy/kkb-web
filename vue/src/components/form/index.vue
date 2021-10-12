@@ -1,7 +1,10 @@
 <template>
-    <LForm :model="userInfo">
-        <LFormItem label="hhhh">
-            <LInput v-model="userInfo.userName" />
+    <LForm :model="userInfo" :rules="rules">
+        <LFormItem label="用户名">
+            <LInput v-model="userInfo.userName" placeholder="sss" />
+        </LFormItem>
+        <LFormItem label="密码">
+            <LInput type="password" v-model="userInfo.password" />
         </LFormItem>
     </LForm>
 </template>
@@ -20,6 +23,7 @@ export default defineComponent({
                 userName: '',
                 password: '',
             },
+            rules: [],
         });
         return {
             ...toRefs(form),

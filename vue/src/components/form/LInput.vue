@@ -12,14 +12,14 @@ export default defineComponent({
             default: 'text',
         },
     },
-    setup(props, { emit }) {
+    setup(props, { emit, attrs }) {
         const onInput = (e: Event) => {
             const value = (e.target as HTMLInputElement).value;
             emit('update:modelValue', value);
         };
         return () => {
             const { modelValue } = props;
-            return <input onInput={onInput} value={modelValue}></input>;
+            return <input onInput={onInput} value={modelValue} {...attrs}></input>;
         };
     },
 });

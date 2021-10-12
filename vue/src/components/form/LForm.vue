@@ -2,12 +2,11 @@
     <div>
         <slot></slot>
     </div>
-
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-
+import { defineComponent, provide } from 'vue';
+import { injectFormKey } from './types';
 export default defineComponent({
     props: {
         model: {
@@ -18,6 +17,11 @@ export default defineComponent({
             type: Object,
         },
     },
-    // setup() {},
+    setup(props) {
+        provide(injectFormKey, {
+            model: props.model,
+            rules: props.rules,
+        });
+    },
 });
 </script>
