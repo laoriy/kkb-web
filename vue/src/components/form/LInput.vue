@@ -1,5 +1,6 @@
 <script lang="tsx">
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
+import { injectFormItemKey, injectFormItem } from './types';
 
 export default defineComponent({
     props: {
@@ -12,14 +13,17 @@ export default defineComponent({
             default: 'text',
         },
     },
-    setup(props, { emit, attrs }) {
+    setup(props, context) {
+        const { emit, attrs } = context;
+        const formItem: injectFormItem = inject(injectFormItemKey);
         const onInput = (e: Event) => {
             const value = (e.target as HTMLInputElement).value;
             emit('update:modelValue', value);
+            formItem?.validate();
         };
         return () => {
-            const { modelValue } = props;
-            return <input onInput={onInput} value={modelValue} {...attrs}></input>;
+            const { modelValue, type } = props;
+            return <input onInput={onInput} type={type} value={modelValue} {...attrs}></input>;
         };
     },
 });
