@@ -7,6 +7,7 @@
             <LInput type="password" v-model="userInfo.password" />
         </LFormItem>
     </LForm>
+    <LInput type="password" v-model="userInfo.password" />
 </template>
 
 <script lang="ts">
@@ -24,8 +25,8 @@ export default defineComponent({
                 password: '',
             },
             rules: {
-                userName: { required: true, messsage: '请输入用户名' },
-                password: { required: true, messsage: '请输入密码' },
+                userName: { required: true, message: '请输入用户名' },
+                password: { required: true, message: '请输入密码' },
             },
         });
         return {

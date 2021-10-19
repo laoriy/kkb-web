@@ -19,7 +19,7 @@ export default defineComponent({
         const onInput = (e: Event) => {
             const value = (e.target as HTMLInputElement).value;
             emit('update:modelValue', value);
-            formItem?.validate();
+            formItem?.validate?.();
         };
         return () => {
             const { modelValue, type } = props;

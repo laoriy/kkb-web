@@ -2022,6 +2022,11 @@ async-limiter@~1.0.0:
   resolved "http://172.16.100.47:4873/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha1-3TeelPDbgxCwgpH51kwyCXZmF/0=
 
+async-validator@^4.0.7:
+  version "4.0.7"
+  resolved "http://172.16.100.47:4873/async-validator/-/async-validator-4.0.7.tgz#034a0fd2103a6b2ebf010da75183bec299247afe"
+  integrity sha1-A0oP0hA6ay6/AQ2nUYO+wpkkev4=
+
 async@^2.6.2:
   version "2.6.3"
   resolved "http://172.16.100.47:4873/async/-/async-2.6.3.tgz#d72625e2344a3656e3a3ad4fa749fa83299d82ff"

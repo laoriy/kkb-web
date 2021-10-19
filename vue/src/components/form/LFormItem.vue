@@ -11,6 +11,7 @@
 import { defineComponent, reactive, toRefs, provide } from 'vue';
 import { injectFormItemKey } from './types';
 import useInjectFormContext from './hooks/injectFormContext';
+import Schema from 'async-validator';
 
 export default defineComponent({
     props: {
@@ -24,18 +25,34 @@ export default defineComponent({
     name: 'LFormItem',
     setup(props) {
         const formContext = useInjectFormContext();
-        const state = reactive({
+        const state = reactive<{ error: string | undefined }>({
             error: '',
         });
 
         const validate = () => {
             let rules;
             let value;
-            if (props.prop) {
-                rules = formContext.rules[props.prop];
-                value = formContext.model[props.prop];
+            const { prop } = props;
+            if (prop) {
+                rules = formContext.rules[prop];
+                value = formContext.model[prop];
+                const descriptor = {
+                    [prop]: rules,
+                };
+                const validator = new Schema(descriptor);
+                validator.validate({ [prop]: value }, (errors, fields) => {
+                    if (errors) {
+                        state.error = errors[0].message;
+                        console.log(fields);
+                        // validation failed, errors is an array of all errors
+                        // fields is an object keyed by field name with an array of
+                        // errors per field
+                    } else {
+                        // validation passed
+                        state.error = '';
+                    }
+                });
             }
-            console.log(rules, value);
         };
         const elFormItem = reactive({
             ...toRefs(props),
