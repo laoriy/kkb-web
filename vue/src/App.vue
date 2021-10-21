@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormComponent from '@/components/form/index.vue';
+import FormComponent from '@/views/index.vue';
 
 export default defineComponent({
     components: { FormComponent },

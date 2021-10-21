@@ -5,9 +5,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, PropType } from 'vue';
-import { injectFormKey } from './types';
-import { FormItemRule } from './types';
+import { defineComponent, provide, PropType, toRefs, reactive } from 'vue';
+import { injectFormKey, lFormEvents, lFormEventsType } from './types';
+import { FormItemRule, lFormItemContext } from './types';
+import mitt from 'mitt';
 export default defineComponent({
     props: {
         model: {
@@ -15,18 +16,34 @@ export default defineComponent({
             required: true,
         },
         rules: {
-            type: Array as PropType<FormItemRule[]>,
+            type: Object as PropType<Record<string, FormItemRule>>,
         },
     },
     setup(props) {
-        provide(injectFormKey, {
-            model: props.model,
-            rules: props.rules,
+        const events: lFormItemContext[] = [];
+        const formMitt = mitt<lFormEventsType>();
+        formMitt.on(lFormEvents.addField, (field) => {
+            if (field.prop) {
+                events.push(field);
+            }
         });
 
-        const validate = () => {
-            console.log(props.model, props.rules);
+        const validate = (cb: (pass: boolean) => void) => {
+            const tasks = events.map((event) => event.validate());
+            Promise.all(tasks)
+                .then(() => {
+                    cb(true);
+                })
+                .catch(() => {
+                    cb(false);
+                });
         };
+
+        const lForm = reactive({
+            formMitt,
+            ...toRefs(props),
+        });
+        provide(injectFormKey, lForm);
         return {
             validate,
         };

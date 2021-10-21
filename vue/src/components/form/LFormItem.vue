@@ -8,8 +8,8 @@
     </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, provide } from 'vue';
-import { injectFormItemKey } from './types';
+import { defineComponent, reactive, toRefs, provide, onMounted } from 'vue';
+import { injectFormItemKey, lFormEvents } from './types';
 import useInjectFormContext from './hooks/injectFormContext';
 import Schema from 'async-validator';
 
@@ -40,7 +40,7 @@ export default defineComponent({
                     [prop]: rules,
                 };
                 const validator = new Schema(descriptor);
-                validator.validate({ [prop]: value }, (errors, fields) => {
+                return validator.validate({ [prop]: value }, (errors, fields) => {
                     if (errors) {
                         state.error = errors[0].message;
                         console.log(fields);
@@ -60,6 +60,9 @@ export default defineComponent({
         });
 
         provide(injectFormItemKey, elFormItem);
+        onMounted(() => {
+            formContext.formMitt.emit(lFormEvents.addField, elFormItem);
+        });
         return {
             ...toRefs(state),
             validate,
