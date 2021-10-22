@@ -1,3 +1,6 @@
+import withInstallFn from '@/utils/with-install';
 import Message from './message';
 
-export default Message;
+const withInstallMessage = withInstallFn(Message, '$message');
+
+export default withInstallMessage;

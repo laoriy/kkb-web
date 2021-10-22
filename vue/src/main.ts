@@ -1,4 +1,7 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import Message from '@/components/message';
+const app = createApp(App);
 
-createApp(App).mount('#app')
+app.use(Message);
+app.mount('#app');
