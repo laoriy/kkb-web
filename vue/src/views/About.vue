@@ -1,19 +1,12 @@
 <template>
-    <router-link to="/">Go to Home</router-link>
-    <router-link to="/about">Go to About</router-link>
-    <router-view></router-view>
+    about page
 </template>
-
 <script lang="ts">
 import { defineComponent, getCurrentInstance } from 'vue';
-import { useRouter } from '@/router/lvue-router';
 
 export default defineComponent({
     setup() {
         const context = getCurrentInstance();
-        const router = useRouter();
-        console.log(router);
-
         console.log(context?.proxy?.$router);
     },
 });

@@ -8,12 +8,14 @@
         </LFormItem>
         <LFormItem>
             <button @click="login">登录</button>
+            <button @click="count += 1">++</button>
+            {{ asf }}
         </LFormItem>
     </LForm>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, ref, getCurrentInstance } from 'vue';
+import { defineComponent, reactive, toRefs, ref, getCurrentInstance, watch, computed } from 'vue';
 import LInput from '../components/form/LInput.vue';
 import LFormItem from '../components/form/LFormItem.vue';
 import LForm from '../components/form/LForm.vue';
@@ -33,6 +35,18 @@ export default defineComponent({
                 userName: { required: true, message: '请输入用户名' },
                 password: { required: true, message: '请输入密码' },
             },
+            count: 0,
+        });
+
+        watch(
+            () => form.count,
+            () => {
+                console.log(form.count, 'count++++');
+            }
+        );
+
+        const asf = computed(() => {
+            return form.count * form.count;
         });
 
         const login = () => {
@@ -50,6 +64,7 @@ export default defineComponent({
             ...toRefs(form),
             formRef,
             login,
+            asf,
         };
     },
 });
