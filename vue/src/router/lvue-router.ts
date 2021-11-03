@@ -51,7 +51,7 @@ const RouterView = defineComponent({
 });
 
 const START_LOCATION_NORMALIZED = {
-    path: window.location.hash.slice(1),
+    path: '/',
     // name: undefined,
     // params: {},
     // query: {},
@@ -61,12 +61,15 @@ const START_LOCATION_NORMALIZED = {
     // meta: {},
     // redirectedFrom: undefined,
 };
-function createHashHistory(router: Router) {
-    window.addEventListener('hashchange', () => {
-        const { currentRoute } = router;
-        const path = window.location.hash.slice(1);
-        currentRoute.value = Object.assign({}, currentRoute.value, { path });
-    });
+
+function onHashChange(router: Router) {
+    const { currentRoute } = router;
+    const path = window.location.hash.slice(1);
+    currentRoute.value = Object.assign({}, currentRoute.value, { path });
+}
+export function createHashHistory(router: Router): void {
+    window.addEventListener('hashchange', onHashChange.bind(null, router));
+    window.addEventListener('load', onHashChange.bind(null, router));
 }
 
 export function createRouter(options: params): Router {
