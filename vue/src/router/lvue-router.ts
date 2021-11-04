@@ -13,6 +13,7 @@ type Router = {
     options: {
         routes: RouteRecordRaw[];
     };
+    routerMaps: Record<string, RouteRecordRaw>;
 };
 
 const routerKey = Symbol('router');
@@ -37,10 +38,8 @@ const RouterLink = defineComponent({
 const RouterView = defineComponent({
     setup() {
         const router = useRouter();
-        const { routes } = router.options;
-        const currentComponent = computed(() =>
-            routes.find((val) => val.path === router.currentRoute.value.path)
-        );
+        const { currentRoute, routerMaps } = router;
+        const currentComponent = computed(() => routerMaps[currentRoute.value.path]);
 
         return () => {
             if (currentComponent.value?.component) {
@@ -52,15 +51,15 @@ const RouterView = defineComponent({
 
 const START_LOCATION_NORMALIZED = {
     path: '/',
-    // name: undefined,
-    // params: {},
-    // query: {},
-    // hash: '',
-    // fullPath: '/',
-    // matched: [],
-    // meta: {},
-    // redirectedFrom: undefined,
 };
+
+function initRouterMaps(routes: RouteRecordRaw[]) {
+    const maps: Router['routerMaps'] = {};
+    routes.forEach((routeItem) => {
+        maps[routeItem.path] = routeItem;
+    });
+    return maps;
+}
 
 function onHashChange(router: Router) {
     const { currentRoute } = router;
@@ -74,6 +73,7 @@ export function createHashHistory(router: Router): void {
 
 export function createRouter(options: params): Router {
     const currentRoute = shallowRef(START_LOCATION_NORMALIZED);
+    const routerMaps = initRouterMaps(options.routes);
     const router = {
         currentRoute,
         options,
@@ -85,6 +85,7 @@ export function createRouter(options: params): Router {
             app.config.globalProperties.$router = _router;
             app.provide(routerKey, _router);
         },
+        routerMaps,
     };
     createHashHistory(router);
     return router;
