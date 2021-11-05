@@ -6,13 +6,10 @@
 
 <script lang="ts">
 import { defineComponent, getCurrentInstance } from 'vue';
-import { useRouter } from '@/router/lvue-router';
 
 export default defineComponent({
     setup() {
         const context = getCurrentInstance();
-        const router = useRouter();
-        console.log(router);
 
         console.log(context?.proxy?.$router);
     },

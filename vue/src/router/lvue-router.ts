@@ -13,6 +13,8 @@ type Router = {
     options: {
         routes: RouteRecordRaw[];
     };
+    go: (delta: number) => void;
+    push: (path: string) => void;
     routerMaps: Record<string, RouteRecordRaw>;
 };
 
@@ -53,6 +55,17 @@ const START_LOCATION_NORMALIZED = {
     path: '/',
 };
 
+function push(path: string) {
+    window.location.hash = `#${path}`;
+}
+function go(delta: number) {
+    window.history.go(delta);
+}
+
+function redirect(path: string) {
+    window.location.replace(path);
+}
+
 function initRouterMaps(routes: RouteRecordRaw[]) {
     const maps: Router['routerMaps'] = {};
     routes.forEach((routeItem) => {
@@ -64,8 +77,13 @@ function initRouterMaps(routes: RouteRecordRaw[]) {
 function onHashChange(router: Router) {
     const { currentRoute } = router;
     const path = window.location.hash.slice(1);
+    if (!path) {
+        redirect('#/');
+        return;
+    }
     currentRoute.value = Object.assign({}, currentRoute.value, { path });
 }
+
 export function createHashHistory(router: Router): void {
     window.addEventListener('hashchange', onHashChange.bind(null, router));
     window.addEventListener('load', onHashChange.bind(null, router));
@@ -77,6 +95,9 @@ export function createRouter(options: params): Router {
     const router = {
         currentRoute,
         options,
+        go,
+        push,
+        redirect,
         install(app: App) {
             // eslint-disable-next-line @typescript-eslint/no-this-alias
             const _router = this;

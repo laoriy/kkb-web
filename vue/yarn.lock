@@ -8830,6 +8830,11 @@ vue@^3.0.0:
     "@vue/server-renderer" "3.2.20"
     "@vue/shared" "3.2.20"
 
+vuex@^3.6.2:
+  version "3.6.2"
+  resolved "http://172.16.100.47:4873/vuex/-/vuex-3.6.2.tgz#236bc086a870c3ae79946f107f16de59d5895e71"
+  integrity sha1-I2vAhqhww655lG8QfxbeWdWJXnE=
+
 watchpack-chokidar2@^2.0.1:
   version "2.0.1"
   resolved "http://172.16.100.47:4873/watchpack-chokidar2/-/watchpack-chokidar2-2.0.1.tgz#38500072ee6ece66f3769936950ea1771be1c957"
