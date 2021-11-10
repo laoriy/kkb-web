@@ -15,3 +15,13 @@ export default defineComponent({
     },
 });
 </script>
+
+<style>
+html {
+    font-size: 50px;
+}
+body {
+    margin: 0;
+    font-size: 12px;
+}
+</style>
