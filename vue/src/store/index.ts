@@ -1,14 +1,14 @@
-import { InjectionKey } from 'vue';
-import { createStore, useStore as baseUseStore, Store } from 'vuex';
+// import { InjectionKey } from 'vue';
+// // import { Store } from 'vuex';
+import { createStore, useStore as baseUseStore, Store } from './lvuex';
 
 export interface State {
     count: number;
 }
-export const key: InjectionKey<Store<State>> = Symbol();
 
 // define your own `useStore` composition function
 export function useStore(): Store<State> {
-    return baseUseStore(key);
+    return baseUseStore<Store<State>>();
 }
 const store = createStore<State>({
     state: {
