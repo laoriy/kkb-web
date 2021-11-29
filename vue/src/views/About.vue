@@ -7,6 +7,7 @@
         <div id="poster">
             <div>这是vuex:</div>
             <div>{{ count }}</div>
+            <div>{{ $store.getters.count }}</div>
             <hr />
             <div>
                 <button @click="syncCount">同步</button>

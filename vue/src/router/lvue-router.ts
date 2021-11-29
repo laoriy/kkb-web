@@ -1,6 +1,6 @@
 import { App, defineComponent, h, shallowRef, computed, Ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
-import { inject } from 'vue';
+import { inject, provide } from 'vue';
 
 type params = {
     routes: RouteRecordRaw[];
@@ -19,6 +19,7 @@ type Router = {
 };
 
 const routerKey = Symbol('router');
+const depthKey = Symbol('depthKey');
 
 export function useRouter(): Router {
     return inject(routerKey) as Router;
@@ -40,6 +41,8 @@ const RouterLink = defineComponent({
 const RouterView = defineComponent({
     setup() {
         const router = useRouter();
+        const depth = inject(depthKey, 0);
+        provide(depthKey, depth + 1);
         const { currentRoute, routerMaps } = router;
         const currentComponent = computed(() => routerMaps[currentRoute.value.path]);
 
