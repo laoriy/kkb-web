@@ -11,7 +11,7 @@ export default defineComponent({
     setup() {
         const context = getCurrentInstance();
 
-        console.log(context?.proxy?.$router);
+        console.log(context?.proxy?.$router, '--');
     },
 });
 </script>
