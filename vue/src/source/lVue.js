@@ -1,4 +1,23 @@
 
+
+
+// 数组响应式
+
+// 1. 替换数组原型中的7个方法；
+const originProto = Array.prototype;
+const arrayProto = Object.create(originProto);
+
+
+['push', 'pop', 'shift', 'unshift', 'splice', 'reverse', 'sort'].forEach((method) => {
+    arrayProto[method] = function () {
+        // 原始操作
+        originProto[method].apply(this, arguments)
+        // 覆盖操作，通知更新
+        console.log('数组执行' + method + '操作：');
+    }
+})
+
+// 对象响应式
 function defineReactive(obj, key, val) {
     //递归
     observe(val);
@@ -29,7 +48,9 @@ function observe(obj) {
         //希望传入的是obj
         return
     }
+
     new Observer(obj);
+
 }
 
 
@@ -70,7 +91,17 @@ class Observer {
     constructor(value) {
         this.value = value
         if (typeof value === 'object') {
-            this.walk()
+            // 判断传入的obj的类型；
+            if (Array.isArray(value)) {
+                // 覆盖原型，
+                value.__proto__ = arrayProto
+                //对数组内部的元素进行像响应化
+                for (let i = 0; i < value.length; i++) {
+                    observe(value[i]);
+                }
+            } else {
+                this.walk()
+            }
         }
     }
     // 对象数据类型

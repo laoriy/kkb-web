@@ -23,12 +23,14 @@
             el: "#app",
             data: {
                 counter: 1,
-                desc: '<span style="color:red;">lvue hellp</span>'
+                desc: '<span style="color:red;">lvue hellp</span>',
+                arr: [1, 2]
             }
         })
 
         setInterval(() => {
             app.counter++
+            app.arr.push(3)
         }, 1000)
     </script>
 </body>
