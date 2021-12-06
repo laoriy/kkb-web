@@ -169,6 +169,11 @@ class Complier {
                 const dir = attrName.substring(2) // xx
                 //执行指令
                 this[dir] && this[dir](node, exp)
+            } else if (this.isEvent(attrName)) {
+                // @click="onClick"
+                const dir = attrName.substring(1) // click
+                // 事件监听
+                this.eventHandler(node, exp, dir)
             }
         })
     }
@@ -190,8 +195,14 @@ class Complier {
     htmlUpdater(node, value) {
         node.innerHTML = value
     }
+    modelUpdater(node, value) {
+        node.value = value;
+    }
     isDirective(attr) {
         return attr.indexOf('l-') === 0
+    }
+    isEvent(attr) {
+        return attr.indexOf('@') === 0;
     }
     // l-text
     text(node, exp) {
@@ -200,6 +211,24 @@ class Complier {
     // l-html
     html(node, exp) {
         this.update(node, exp, 'html')
+    }
+
+    // l-model
+    //l-model="xx"
+    model(node, exp) {
+        //update方法值完成赋值和更新
+        this.update(node, exp, 'model')
+        // 事件监听
+        node.addEventListener('input', e => {
+            // 将新的值复制给数据即可
+            this.$vm[exp] = e.target.value;
+        })
+    }
+
+    eventHandler(node, exp, dir) {
+        const fn = this.$vm.$options.methods && this.$vm.$options.methods[exp]
+        node.addEventListener(dir, fn.bind(this.$vm))
+
     }
 
 }

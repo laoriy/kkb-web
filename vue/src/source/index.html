@@ -11,9 +11,10 @@
 <body>
     <div id="app">
         <!-- 插值 -->
-        <p>{{counter}}</p>
+        <p @click="add">{{counter}}</p>
         <!-- 指令 -->
         <p l-text="counter"></p>
+        <input l-model="counter" type="text">
         <p l-html="desc"></p>
     </div>
     <script src="./lVue.js"></script>
@@ -25,13 +26,18 @@
                 counter: 1,
                 desc: '<span style="color:red;">lvue hellp</span>',
                 arr: [1, 2]
+            },
+            methods: {
+                add() {
+                    this.counter++;
+                }
             }
         })
 
-        setInterval(() => {
-            app.counter++
-            app.arr.push(3)
-        }, 1000)
+        // setInterval(() => {
+        //     // app.counter++
+        //     app.arr.push(3)
+        // }, 1000)
     </script>
 </body>
 
