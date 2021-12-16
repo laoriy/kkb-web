@@ -19,7 +19,7 @@ import LInput from '../components/form/LInput.vue';
 import LFormItem from '../components/form/LFormItem.vue';
 import LForm from '../components/form/LForm.vue';
 import Message from '@/components/message';
-import { useRouter } from '@/router/lvue-router';
+import { useRouter } from '@/router';
 
 export default defineComponent({
     components: { LInput, LFormItem, LForm },

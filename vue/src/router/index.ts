@@ -1,7 +1,14 @@
-import { createRouter } from './lvue-router';
-import { RouteRecordRaw } from 'vue-router';
+// import { createRouter, useRouter as baseUseRouter } from './lvue-router';
+import {
+    RouteRecordRaw,
+    createRouter,
+    createWebHistory,
+    useRouter as baseUseRouter,
+} from 'vue-router';
 import Form from '../views/Form.vue';
 import About from '../views/About.vue';
+
+export const useRouter = baseUseRouter;
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -17,6 +24,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
+    history: createWebHistory(),
     routes,
 });
 

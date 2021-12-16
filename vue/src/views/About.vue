@@ -22,7 +22,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import Poster from '../components/poster/poster.vue';
-import { useRouter } from '@/router/lvue-router';
+import { useRouter } from '@/router';
 import { createSvgPoster } from '@/utils/createPoster';
 import { useStore } from '@/store/index';
 
