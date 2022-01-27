@@ -1,13 +1,13 @@
-// import { createRouter, useRouter as baseUseRouter } from './lvue-router';
 import {
     RouteRecordRaw,
-    createRouter,
-    createWebHistory,
+    createRouter as _createRouter,
+    RouterHistory,
     useRouter as baseUseRouter,
+    Router,
 } from 'vue-router';
 import Form from '../views/Form.vue';
 import About from '../views/About.vue';
-//统一处理
+
 export const useRouter = baseUseRouter;
 
 const routes: Array<RouteRecordRaw> = [
@@ -23,9 +23,9 @@ const routes: Array<RouteRecordRaw> = [
     },
 ];
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
-
-export default router;
+export function createRouter(history: RouterHistory): Router {
+    return _createRouter({
+        history,
+        routes,
+    });
+}
