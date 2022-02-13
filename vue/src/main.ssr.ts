@@ -1,12 +1,10 @@
 import { App, createSSRApp } from 'vue';
-import AppCmp from './App.vue';
+import AppSSR from './AppSSR.vue';
 import { createRouter } from '@/router/index.ssr';
 import { createWebHistory, Router } from 'vue-router';
 
 // 返回工厂函数
-export function createApp(
-    context?: any
-): {
+export function createApp(context?: any): {
     app: App;
     router: Router;
 } {
@@ -15,7 +13,7 @@ export function createApp(
     const router = createRouter(history);
 
     // 2. 创建vue实例app
-    const app = createSSRApp(AppCmp);
+    const app = createSSRApp(AppSSR);
 
     return {
         app,
