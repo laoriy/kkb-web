@@ -1,7 +1,14 @@
-// 客户端也需要创建vue实例。
-import { createApp } from './main.ssr';
-const { app, router } = createApp();
+import { createSSRApp } from 'vue';
+import { createWebHistory } from 'vue-router';
+import  createRouter  from './router/index.ssr';
+import App from './App.vue';
+
+const app = createSSRApp(App);
+
+const router = createRouter(createWebHistory());
+
+app.use(router);
+
 router.isReady().then(() => {
-    // 挂载激活
     app.mount('#app');
 });

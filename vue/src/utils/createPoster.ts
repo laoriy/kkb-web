@@ -1,5 +1,6 @@
+
 import html2canvas, { Options } from 'html2canvas';
-import * as vueRasterize from 'vue-rasterize';
+// import * as vueRasterize from 'vue-rasterize';
 
 export function downloadImage(url: string, name = '图片'): void {
     const event = new MouseEvent('click');
@@ -22,7 +23,8 @@ export function downloadImage(url: string, name = '图片'): void {
 
 const DEFAULT_OPTIONS = {
     backgroundColor: 'transparent',
-    scale: window.devicePixelRatio * 1,
+    // scale: window.devicePixelRatio * 1,
+    scale: 1,
     useCORS: true,
     logging: false,
     autoDownload: true,
@@ -126,14 +128,14 @@ export function createSvgPoster(el: HTMLElement): void {
     const { html, rectWidth, rectHeight } = combineHtml(el);
     console.log(rectWidth, rectHeight);
 
-    const aa = vueRasterize.drawHTML(html, canvas, {
-        rectWidth,
-        rectHeight,
-        scale: 3,
-    });
-    aa.then(() => {
-        downloadImage(canvas.toDataURL('image/png'));
-    });
+    // const aa = vueRasterize.drawHTML(html, canvas, {
+    //     rectWidth,
+    //     rectHeight,
+    //     scale: 3,
+    // });
+    // aa.then(() => {
+    //     downloadImage(canvas.toDataURL('image/png'));
+    // });
 
     // const svg = createSvg(el);
 

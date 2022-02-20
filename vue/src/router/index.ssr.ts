@@ -1,9 +1,8 @@
 import {
     RouteRecordRaw,
-    createRouter as _createRouter,
+    createRouter,
     RouterHistory,
     useRouter as baseUseRouter,
-    Router,
 } from 'vue-router';
 import Form from '../views/Form.vue';
 import About from '../views/About.vue';
@@ -23,8 +22,8 @@ const routes: Array<RouteRecordRaw> = [
     },
 ];
 
-export function createRouter(history: RouterHistory): Router {
-    return _createRouter({
+export default function (history: RouterHistory) {
+    return createRouter({
         history,
         routes,
     });

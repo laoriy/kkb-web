@@ -6,7 +6,4 @@ import store, { key } from './store';
 
 const app = createApp(App);
 
-app.use(store, key)
-    .use(router)
-    .use(Message)
-    .mount('#app');
+app.use(store, key).use(router).use(Message).mount('#app');

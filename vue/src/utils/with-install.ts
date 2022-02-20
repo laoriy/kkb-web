@@ -1,8 +1,7 @@
 import { Plugin, App } from 'vue';
 const withInstallFn = <T>(fn: T, name: string): T & Plugin => {
-    (fn as T & Plugin).install = function(app: App) {
+    (fn as T & Plugin).install = function (app: App) {
         app.config.globalProperties[name] = fn;
-        console.log(name);
     };
     return fn as T & Plugin;
 };

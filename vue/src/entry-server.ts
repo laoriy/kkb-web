@@ -1,20 +1,18 @@
-// 调用工厂函数，创建实例；
-import { App } from 'vue';
-import { createApp } from './main.ssr';
+// entry-server.js
+import { createSSRApp } from 'vue';
+// 服务器端路由与客户端使用不同的历史记录
+import { createMemoryHistory } from 'vue-router';
+import createRouter from './router/index.ssr';
+import App from './App.vue';
 
-// 该函数会被express的路由处理函数调用，创建vue实例
-export default function(context: any) {
-    return new Promise<App>((resolve, reject) => {
-        const { app, router } = createApp(context);
-        // 显示首屏的处理
-        router.push(context.url);
-        router
-            .isReady()
-            .then(() => {
-                resolve(app);
-            })
-            .catch((error) => {
-                reject(error);
-            });
-    });
+export default function () {
+    const app = createSSRApp(App);
+    const router = createRouter(createMemoryHistory());
+
+    app.use(router);
+
+    return {
+        app,
+        router,
+    };
 }
