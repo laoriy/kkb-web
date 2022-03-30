@@ -29,4 +29,10 @@
         - 三次贝塞尔曲线：bezierCurverTo(cpx1,cpy1,cpx2,cpy2,x,y)
         - 矩形：rect(x,y,w,h)
 
+#### 图形样式
 
+- 着色区域
+    1. 描边区域： strokeStyle 代表了描边样式，描边区域的绘制方法是 stroke()、strokeRect() 或者strokeText() 。
+    2. 填充区域： fillStyle 代表了填充样式，填充区域的绘制方法是 fill()、fillRect() 或者fillText() 。
+
+- 渐变色

@@ -110,7 +110,7 @@
 
     </script> -->
 
-    <script>
+    <!-- <script>
         /*  水滴 */
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
@@ -124,6 +124,26 @@
         ctx.quadraticCurveTo(-50, -50, 0, 0)
 
         ctx.fill()
+    </script> -->
+
+    <script>
+        /*  着色区域 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.lineWidth = 20
+        ctx.beginPath()
+        ctx.arc(100, 100, 50, 0, Math.PI * 2)
+        ctx.fillStyle = 'red'
+        ctx.fillStyle = "#345fff"
+        ctx.fillStyle = "rgba(255,0,0,0.5)"
+        ctx.fill()
+
+        ctx.beginPath()
+        ctx.arc(100, 150, 50, 0, Math.PI * 2)
+        ctx.strokeStyle = "rgba(255,0,0,0.5)"
+        ctx.stroke()
     </script>
 </body>
 
