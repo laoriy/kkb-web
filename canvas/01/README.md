@@ -36,3 +36,13 @@
     2. 填充区域： fillStyle 代表了填充样式，填充区域的绘制方法是 fill()、fillRect() 或者fillText() 。
 
 - 渐变色
+    1. 建立渐变对象的方式：
+        - 线性渐变  gradient=createLinearGradient(x1, y1, x2, y2)
+        - 径向渐变 gradient=createRadialGradient(x1, y1, r1, x2, y2, r2)
+
+    2. 定义渐变的颜色节点	
+        - gradient.addColorStop(position, color)
+
+    3. 赋值方式
+        - ctx.fillStyle= gradient
+        - ctx.strokeStyle= gradient

@@ -126,7 +126,7 @@
         ctx.fill()
     </script> -->
 
-    <script>
+    <!-- <script>
         /*  着色区域 */
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
@@ -144,6 +144,34 @@
         ctx.arc(100, 150, 50, 0, Math.PI * 2)
         ctx.strokeStyle = "rgba(255,0,0,0.5)"
         ctx.stroke()
+
+    </script> -->
+    <script>
+        /*  渐变色 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.lineWidth = 20
+
+        // 线性渐变
+        // const gr = ctx.createLinearGradient(50, 50, 400, 400)
+        // gr.addColorStop(0, 'red')
+        // gr.addColorStop(0.5, 'yellow')
+        // gr.addColorStop(1, 'green')
+        // ctx.fillStyle = gr
+        // ctx.fillRect(50, 50, 350, 350)
+
+        // 径向渐变
+
+        const gr = ctx.createRadialGradient(200, 200, 50, 300, 300, 200)
+
+        gr.addColorStop(0, 'red')
+        gr.addColorStop(0.5, 'yellow')
+        gr.addColorStop(1, 'green')
+        ctx.fillStyle = gr
+        ctx.fillRect(50, 50, 350, 350)
+
     </script>
 </body>
 
