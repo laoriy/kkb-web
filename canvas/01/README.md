@@ -46,3 +46,19 @@
     3. 赋值方式
         - ctx.fillStyle= gradient
         - ctx.strokeStyle= gradient
+
+- 纹理
+    1. 建立纹理对象：pattern=context.createPattern(image,"repeat|repeat-x|repeat-y|no-repeat");
+    2. 为着色样式赋值：
+        ctx.fillStyle= pattern
+        ctx.strokeStyle= pattern
+
+
+#### 影响描边样式的因素
+- strokeStyle：描边的颜色
+- lineWidth：描边宽
+- lineCap：描边端点样式
+- lineJoin：描边拐角类型
+- miterLimit：拐角最大厚度（只适用于lineJoin=‘miter’ 的情况）
+- setLineDash(segments)：将描边设置为虚线，可以通过getLineDash() 方法获取虚线样式
+- lineDashOffset：虚线的偏移量
