@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas绘图</title>
+</head>
+<style>
+    #canvas {
+        background-color: cornsilk;
+    }
+</style>
+
+<body>
+
+    <canvas id="canvas" width="600" height="700"></canvas>
+
+
+    <!-- <script>
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d');
+
+
+        // 颜色
+        ctx.fillStyle = 'red'
+        ctx.strokeStyle = 'orange'
+        // 描边宽度
+        ctx.lineWidth = 10
+
+        /* 矩形 */
+        ctx.fillRect(50, 50, 400, 200)
+        ctx.strokeRect(50, 250, 400, 200)
+        ctx.clearRect(50, 50, 50, 50)
+
+        // 路径
+
+        /* lineTo 直线 */
+        ctx.strokeStyle = 'green'
+        ctx.beginPath();
+        ctx.moveTo(50, 50);
+        ctx.lineTo(400, 50);
+        ctx.lineTo(400, 80)
+        ctx.moveTo(400, 300) // 加这一句，路径独立
+        // 圆弧
+        ctx.arc(300, 300, 100, 0, Math.PI * 3 / 2)
+        ctx.moveTo(0, 0) // 加这一句，路径独立
+        // 切线圆弧
+        ctx.arcTo(50, 100, 400, 100, 100)
+        ctx.moveTo(0, 0)
+        // 二次贝塞尔
+        ctx.quadraticCurveTo(400, 50, 400, 300)
+        ctx.moveTo(50, 50)
+        // 三次贝塞尔
+        ctx.bezierCurveTo(400, 50, 400, 300, 600, 300)
+        ctx.stroke();
+        ctx.closePath()
+        // 路径矩形
+        ctx.beginPath();
+        ctx.strokeStyle = 'blue'
+        ctx.rect(50,500,100,100)
+        ctx.stroke()
+
+
+
+    </script> -->
+
+    <!-- <script>
+        /*  机器人 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        // 填充色
+        ctx.fillStyle = 'red';
+        // 描边宽度
+        ctx.lineWidth = 40;
+        /* 面部 */
+        // 面部
+        ctx.fillRect(50, 250, 400, 200)
+        // 面部轮廓
+        ctx.strokeRect(50, 250, 400, 200)
+        // 眼罩
+        ctx.clearRect(50, 300, 400, 60)
+
+        /* 嘴巴 */
+        ctx.beginPath()
+        ctx.moveTo(150, 400)
+        ctx.lineTo(350, 400)
+        ctx.stroke()
+
+        /* 眼睛 */
+        ctx.beginPath()
+        ctx.arc(150, 330, 20, 0, Math.PI * 2)
+        ctx.moveTo(350 - 20, 340)
+        ctx.arc(350, 340, 20, -Math.PI, 0)
+        ctx.fill();
+
+        /* 天线 */
+
+        ctx.beginPath()
+        ctx.moveTo(50, 50)
+        ctx.bezierCurveTo(150, 50, 150, 250, 250, 250);
+        ctx.moveTo(450, 50)
+        ctx.bezierCurveTo(350, 50, 350, 250, 250, 250);
+        ctx.stroke()
+
+    </script> -->
+
+    <!-- <script>
+        /*  水滴 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.translate(300, 300)
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        ctx.quadraticCurveTo(50, -50, 50, -100)
+        ctx.arc(0, -100, 50, 0, Math.PI, true)
+        ctx.quadraticCurveTo(-50, -50, 0, 0)
+
+        ctx.fill()
+    </script> -->
+
+    <!-- <script>
+        /*  着色区域 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.lineWidth = 20
+        ctx.beginPath()
+        ctx.arc(100, 100, 50, 0, Math.PI * 2)
+        ctx.fillStyle = 'red'
+        ctx.fillStyle = "#345fff"
+        ctx.fillStyle = "rgba(255,0,0,0.5)"
+        ctx.fill()
+
+        ctx.beginPath()
+        ctx.arc(100, 150, 50, 0, Math.PI * 2)
+        ctx.strokeStyle = "rgba(255,0,0,0.5)"
+        ctx.stroke()
+
+    </script> -->
+    <!-- <script>
+        /*  渐变色 + 纹理 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.lineWidth = 20
+
+        // 线性渐变
+        // const gr = ctx.createLinearGradient(50, 50, 400, 400)
+        // gr.addColorStop(0, 'red')
+        // gr.addColorStop(0.5, 'yellow')
+        // gr.addColorStop(1, 'green')
+        // ctx.fillStyle = gr
+        // ctx.fillRect(50, 50, 350, 350)
+
+        // 径向渐变
+
+        // const gr = ctx.createRadialGradient(200, 200, 50, 300, 300, 200)
+
+        // gr.addColorStop(0, 'red')
+        // gr.addColorStop(0.5, 'yellow')
+        // gr.addColorStop(1, 'green')
+        // ctx.fillStyle = gr
+        // ctx.fillRect(50, 50, 350, 350)
+
+
+        // 纹理
+        const image = new Image();
+        image.src = './img.webp';
+        image.onload = () => {
+            const pt = ctx.createPattern(image, 'repeat-y')
+            ctx.fillStyle = pt
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+
+
+    </script> -->
+
+    <!-- <script>
+        /*  描边样式 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.lineWidth = 20
+        ctx.strokeStyle = 'maroon'
+
+        // ctx.save()
+        ctx.beginPath()
+        ctx.moveTo(50, 50)
+        ctx.lineTo(400, 50)
+        ctx.lineTo(200, 100)
+        ctx.lineCap = 'butt' // default
+        ctx.lineJoin = 'miter' // default
+        ctx.miterLimit = 1
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.moveTo(50, 150)
+        ctx.lineTo(400, 150)
+        ctx.lineTo(200, 200)
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.moveTo(50, 250)
+        ctx.lineTo(400, 250)
+        ctx.lineTo(200, 300)
+        ctx.lineCap = 'square'
+        ctx.lineJoin = 'bevel'
+        ctx.stroke()
+
+        /* 虚线 */
+        ctx.beginPath()
+        ctx.lineWidth = 2
+        ctx.moveTo(50, 350)
+        ctx.lineTo(400, 350)
+        ctx.setLineDash([5, 10, 15])
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.lineWidth = 2
+        ctx.moveTo(50, 380)
+        ctx.lineTo(400, 380)
+        ctx.lineDashOffset = 300
+        ctx.setLineDash([5, 10, 15])
+        ctx.stroke()
+
+
+    </script> -->
+
+    <script>
+        /*  描边样式 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.lineWidth = 20
+        ctx.strokeStyle = 'maroon'
+
+    
+    </script>
+</body>
+
+</html>
