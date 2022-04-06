@@ -9,7 +9,7 @@
 </head>
 <style>
     #canvas {
-        background-color: cornsilk;
+        background-color: #000;
     }
 </style>
 
@@ -240,15 +240,65 @@
     </script> -->
 
     <script>
-        /*  描边样式 */
+        /*  心形霓虹灯*/
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
         const canvas = document.getElementById('canvas')
         const ctx = canvas.getContext('2d')
-        ctx.lineWidth = 20
-        ctx.strokeStyle = 'maroon'
 
-    
+        const colors = ['red', 'yellow']
+
+        function draw() {
+            ctx.save()
+            ctx.translate(300, 400)
+            ctx.beginPath()
+            ctx.moveTo(0, 0)
+            ctx.bezierCurveTo(-200, -50, -180, -300, 0, -200)
+            ctx.bezierCurveTo(180, -300, 200, -50, 0, 0)
+            ctx.closePath()
+            ctx.strokeStyle = colors[0]
+            ctx.lineWidth = 10
+
+            ctx.shadowColor = colors[0]
+            for (let i = 30; i > 0; i -= 5) {
+                ctx.shadowBlur = i
+                ctx.stroke()
+            }
+            // 虚线
+            ctx.setLineDash([30])
+            ctx.stroke()
+
+            // 还原上下文对象的状态
+
+            ctx.restore()
+
+            ctx.save()
+            ctx.translate(300, 400)
+            ctx.beginPath()
+            ctx.moveTo(0, 0)
+            ctx.bezierCurveTo(-200, -50, -180, -300, 0, -200)
+            ctx.bezierCurveTo(180, -300, 200, -50, 0, 0)
+            ctx.closePath()
+            ctx.strokeStyle = colors[1]
+            ctx.lineDashOffset = 30
+            ctx.lineWidth = 10
+
+            // 虚线
+            ctx.setLineDash([30])
+            ctx.stroke()
+
+            // 还原上下文对象的状态
+
+            ctx.restore()
+        }
+
+        setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            colors.reverse()
+            draw()
+        }, 300)
+
+
     </script>
 </body>
 

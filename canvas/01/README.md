@@ -62,3 +62,13 @@
 - miterLimit：拐角最大厚度（只适用于lineJoin=‘miter’ 的情况）
 - setLineDash(segments)：将描边设置为虚线，可以通过getLineDash() 方法获取虚线样式
 - lineDashOffset：虚线的偏移量
+
+#### 投影
+- 位置：
+        shadowOffsetX = float
+        shadowOffsetY = float
+- 模糊度： shadowBlur = float
+- 颜色：shadowColor = color
+
+    注意：投影是上下文对象的一种属性，在绘制图形时，无论执行的是描边方法，还是填充方法，都会在其所绘图形的后面添加投影。
+
