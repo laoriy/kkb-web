@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas绘图</title>
+</head>
+<style>
+    #canvas {
+        background-color: rgb(207, 204, 18);
+    }
+</style>
+
+<body>
+
+    <canvas id="canvas" width="600" height="700"></canvas>
+    <script>
+        /* font */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.font = 'bold 36px Arial'
+        // ctx.textAlign = 'end'
+        ctx.fillText('这是Canvas', 100, 100)
+
+
+
+    </script>
+</body>
+
+</html>
