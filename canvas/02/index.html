@@ -9,14 +9,15 @@
 </head>
 <style>
     #canvas {
-        background-color: rgb(207, 204, 18);
+        /* background-color: rgb(207, 204, 18); */
+        background: #000;
     }
 </style>
 
 <body>
 
-    <canvas id="canvas" width="600" height="700"></canvas>
-    <script>
+    <canvas id="canvas" width="800" height="700"></canvas>
+    <!-- <script>
         /* font */
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
@@ -60,8 +61,89 @@
         ctx.textBaseline = 'bottom'
         ctx.fillText('bottom', 250, 400)
 
+        //文字内容
+        const text = 'canvas-------------';
+        //矩形左上角位置
+        const [x, y] = [50, 550];
+        //矩形宽度
+        const height = 60;
 
+        ctx.setLineDash([])
+        //字体
+        ctx.font = '36px Arial';
+        //水平居中
+        ctx.textAlign = 'center';
+        //垂直居中
+        ctx.textBaseline = 'middle';
+        //文字宽度
+        const width = ctx.measureText(text).width + 36;
+        //绘制矩形
+        ctx.strokeRect(x, y, width, height);
+        //绘制文字
+        ctx.fillText(text, x + width / 2, y + height / 2);
 
+    </script> -->
+
+    <!-- <script>
+        /* 布艺文字 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        // 投影
+        ctx.shadowColor = 'rgba(0,0,0,0.6)'
+        ctx.shadowBlur = 4
+        ctx.shadowOffsetY = 2
+        // 文本
+        ctx.font = 'bold 200px Arial'
+        ctx.fillStyle = '#a76921'
+        ctx.fillText('canvas', 50, 150)
+        // 实体描边
+        ctx.strokeStyle = '#f0d5ac'
+        ctx.lineWidth = 9
+        ctx.strokeText('canvas', 50, 150)
+
+        // 虚线描边
+
+        ctx.strokeStyle = '#333'
+        ctx.setLineDash([5, 3])
+        ctx.lineWidth = 1
+        ctx.strokeText('canvas', 50, 150)
+
+    </script> -->
+
+    <script>
+        /* 夜巴黎 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        //颜色数组
+        const colors = ['red', 'yellow'];
+        const dashOffset = [0, 6];
+        const states = [0, 1];
+        function draw() {
+            ctx.save();
+            //偏移坐标系
+            ctx.beginPath();
+            ctx.strokeStyle = colors[states[0]];
+            ctx.lineWidth = 3;
+            ctx.setLineDash([6]);
+            ctx.lineDashOffset = dashOffset[states[0]];
+            ctx.font = 'bold 200px arial';
+            ctx.shadowColor = 'orange';
+            for (let i = 8; i > 0; i -= 1) {
+                ctx.shadowBlur = i;
+                ctx.strokeText('夜巴黎', 80, 250);
+            }
+            ctx.restore();
+        }
+
+        setInterval(function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            draw();
+            states.reverse();
+        }, 500);
 
     </script>
 </body>

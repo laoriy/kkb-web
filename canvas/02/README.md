@@ -16,6 +16,17 @@
     - 填充文字 fillText(text, x, y , maxWidth
     - 描边文字 strokeText(text, x, y , maxWidth)
 
+- 扩展 - 获取文字宽度的方法
+
+    ctx.measureText(text)
+
+    此方法可以让某些元素随文字宽度的变化而变化；也可以让文字达到某种宽度的时候，发生某种变化。
+
+- 布艺文字
+
+
+#### 文本属性
+
 
 
 
