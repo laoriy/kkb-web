@@ -15,7 +15,9 @@
 </style>
 
 <body>
-
+    <video id="vid" controls autoplay loop muted>
+        <source src="./assets/move.mp4" type='video/mp4'>
+    </video>
     <canvas id="canvas" width="800" height="700"></canvas>
     <!-- <script>
         /* font */
@@ -112,7 +114,7 @@
 
     </script> -->
 
-    <script>
+    <!-- <script>
         /* 夜巴黎 */
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
@@ -144,6 +146,34 @@
             draw();
             states.reverse();
         }, 500);
+
+    </script> -->
+    <script>
+        /* 夜巴黎 */
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        // const img = new Image()
+        // img.src = './assets/dog.jpg'
+        // img.onload = () => {
+        //     // 相机视图缩小，实际看到的图是放大的
+        //     ctx.drawImage(img, img.width / 2, 0, img.width / 2, img.height, 100, 50, img.width, img.height)
+        // }
+
+
+        /* 播放视频 */
+
+        let interval = null;
+        vid.addEventListener('play', function () {
+            interval = setInterval(function () {
+                ctx.drawImage(vid, 0, 0);
+            }, 40);
+        })
+        vid.addEventListener('pause', function () {
+            clearInterval(interval);
+        })
+
 
     </script>
 </body>

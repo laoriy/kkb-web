@@ -25,7 +25,30 @@
 - 布艺文字
 
 
-#### 文本属性
+#### 图像
+
+- 常用的图像源
+    - 图像元素：\<img>
+    - 视频元素：\<video>
+    - canvas：\<canvas>
+
+- js 建立图像源的方式
+    - \<img>：
+        - new Image()
+        - document.createElement(‘img’)
+    - \<video>：document.createElement(‘video’)
+    - \<canvas>：document.createElement(‘canvas’)
+
+- drawImage() 的操作方式
+
+    - 绘图 + 位移：drawImage(image, x, y)
+    - 绘图 + 位移 + 缩放：drawImage(image, x, y,width,height)
+    - 绘图 + 裁切 + 位移 + 缩放：drawImage(image, x1, y1,w1,h1,x2,y2,w2,h2)
+
+
+
+
+
 
 
 
