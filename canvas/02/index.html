@@ -15,9 +15,9 @@
 </style>
 
 <body>
-    <video id="vid" controls autoplay loop muted>
+    <!-- <video id="vid" controls autoplay loop muted>
         <source src="./assets/move.mp4" type='video/mp4'>
-    </video>
+    </video> -->
     <canvas id="canvas" width="800" height="700"></canvas>
     <!-- <script>
         /* font */
@@ -149,32 +149,56 @@
 
     </script> -->
     <script>
-        /* 夜巴黎 */
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
         const canvas = document.getElementById('canvas')
         const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        /* 图片  */
         // const img = new Image()
         // img.src = './assets/dog.jpg'
         // img.onload = () => {
-        //     // 相机视图缩小，实际看到的图是放大的
+        //     // 相机视图缩小，实际看到的图是放大的,后面四个参数是对裁剪后的图进行位置大小摆放
         //     ctx.drawImage(img, img.width / 2, 0, img.width / 2, img.height, 100, 50, img.width, img.height)
         // }
 
 
         /* 播放视频 */
 
-        let interval = null;
-        vid.addEventListener('play', function () {
-            interval = setInterval(function () {
-                ctx.drawImage(vid, 0, 0);
-            }, 40);
-        })
-        vid.addEventListener('pause', function () {
-            clearInterval(interval);
-        })
+        // let interval = null;
+        // vid.addEventListener('play', function () {
+        //     interval = setInterval(function () {
+        //         ctx.drawImage(vid, 0, 0);
+        //     }, 40);
+        // })
+        // vid.addEventListener('pause', function () {
+        //     clearInterval(interval);
+        // })
 
 
+        /* 雪碧图 */
+        // 图片数量
+        const len = 8
+        // 宽高256
+        const size = 256
+
+        let fm = 0 // 当前帧
+
+        const img = new Image()
+        img.src = './assets/bomb.jpg'
+        function draw() {
+            ctx.drawImage(img, fm * size, 0, size, size, 0, 0, size, size)
+            fm++;
+            if (fm === len) {
+                fm = 0
+            }
+        }
+        img.onload = draw
+
+        setInterval(() => {
+            draw()
+        }, 100)
     </script>
 </body>
 
