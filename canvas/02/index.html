@@ -148,7 +148,7 @@
         }, 500);
 
     </script> -->
-    <script>
+    <!-- <script>
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
         const canvas = document.getElementById('canvas')
@@ -199,6 +199,35 @@
         setInterval(() => {
             draw()
         }, 100)
+    </script> -->
+
+    <script>
+        /** imageData **/
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        // const imgData = new ImageData(200, 200)
+        // imgData.data.forEach((ele, index) => {
+        //     imgData.data[index] = 100
+        // })
+        // ctx.putImageData(imgData, 0, 0)
+
+        const imgData = ctx.createImageData(200, 200)
+        imgData.data.forEach((ele, index) => {
+            imgData.data[index] = 100
+        })
+        ctx.putImageData(imgData, 0, 0)
+
+
+        /*
+        * 获取canvas中的像素
+        */
+
+        const imageData2 = ctx.getImageData(0, 0, 1, 1)
+        console.log(imageData2);
     </script>
 </body>
 
