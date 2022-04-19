@@ -201,6 +201,59 @@
         }, 100)
     </script> -->
 
+    <!-- <script>
+        /** imageData **/
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+
+        // 1.
+        // const imgData = new ImageData(200, 200)
+        // imgData.data.forEach((ele, index) => {
+        //     imgData.data[index] = 100
+        // })
+        // ctx.putImageData(imgData, 0, 0)
+
+        // 2.
+        // const imgData = ctx.createImageData(200, 200)
+        // imgData.data.forEach((ele, index) => {
+        //     imgData.data[index] = 100
+        // })
+        // ctx.putImageData(imgData, 0, 0)
+
+        /*
+        * 3.获取canvas中的像素
+        */
+
+        // const imageData2 = ctx.getImageData(0, 0, 1, 1)
+        // console.log(imageData2);
+
+
+        // 4.
+        const img = new Image()
+        img.src = './assets/dog.jpg'
+        img.onload = () => {
+            const { width, height } = img
+            /* 绘制图形 */
+            ctx.drawImage(img, 0, 0)
+            /* 获取图像imgData */
+            const imgData = ctx.getImageData(0, 0, width, height)
+            /* 修改像素 */
+            const data = imgData.data
+            for (let i = 0; i < data.length; i += 4) {
+                data[i + 1] = 0
+            }
+
+            /* 显示imgData */
+            // ctx.putImageData(imgData, 0, height, 50, 50, 200, 200)
+            ctx.putImageData(imgData, 0, height)
+
+        }
+    </script> -->
+
     <script>
         /** imageData **/
         // 没有提示代码解决
@@ -209,25 +262,52 @@
         const ctx = canvas.getContext('2d')
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
-        // const imgData = new ImageData(200, 200)
-        // imgData.data.forEach((ele, index) => {
-        //     imgData.data[index] = 100
-        // })
-        // ctx.putImageData(imgData, 0, 0)
+        const img = new Image()
+        /* 变灰 */
+        // img.src = './assets/river.jpg'
+        // img.onload = () => {
+        //     const { width, height } = img
+        //     /* 绘制图形 */
+        //     ctx.drawImage(img, 0, 0)
+        //     /* 获取图像imgData */
+        //     const imgData = ctx.getImageData(0, 0, width, height)
+        //     /* 修改像素 */
+        //     const data = imgData.data
+        //     for (let i = 0; i < data.length; i += 4) {
+        //         const [r, g, b] = [data[i], data[i + 1], data[i + 2]]
 
-        const imgData = ctx.createImageData(200, 200)
-        imgData.data.forEach((ele, index) => {
-            imgData.data[index] = 100
-        })
-        ctx.putImageData(imgData, 0, 0)
+        //         const lm = 0.299 * r + 0.587 * g + 0.114 * b;
+        //         data[i] = data[i + 1] = data[i + 2] = lm
 
+        //     }
 
-        /*
-        * 获取canvas中的像素
-        */
+        //     /* 显示imgData */
+        //     // ctx.putImageData(imgData, 0, height, 50, 50, 200, 200)
+        //     ctx.putImageData(imgData, 0, height)
 
-        const imageData2 = ctx.getImageData(0, 0, 1, 1)
-        console.log(imageData2);
+        // }
+
+        /* 马赛克 */
+
+        img.src = './assets/wns.jpg'
+        img.onload = () => {
+            const { width, height } = img
+            /* 绘制图形 */
+            ctx.drawImage(img, 0, 0)
+            /* 获取图像imgData */
+            const imgData = ctx.getImageData(0, 0, width, height)
+            /* 修改像素 */
+            const data = imgData.data
+            const size = 8
+            for (let y = 0; y < height; y += size) {
+                for (let x = 0; x < width; x += size) {
+                    const rIndex = (y * width + x) * 4
+                    const [r, g, b] = [data[rIndex], data[rIndex + 1], data[rIndex + 2]]
+                    ctx.fillStyle = `rgb(${r},${g},${b})`
+                    ctx.fillRect(x, y, size, size)
+                }
+            }
+        }
     </script>
 </body>
 
