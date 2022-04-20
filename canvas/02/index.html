@@ -9,8 +9,8 @@
 </head>
 <style>
     #canvas {
-        /* background-color: rgb(207, 204, 18); */
-        background: #000;
+        background-color: rgb(207, 204, 18);
+        /* background: #000; */
     }
 </style>
 
@@ -254,7 +254,7 @@
         }
     </script> -->
 
-    <script>
+    <!-- <script>
         /** imageData **/
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
@@ -287,7 +287,7 @@
 
         // }
 
-        /* 马赛克 */
+        // /* 马赛克 */
 
         img.src = './assets/wns.jpg'
         img.onload = () => {
@@ -308,6 +308,61 @@
                 }
             }
         }
+
+        /*边缘算法*/
+        // function roberts(width, height) {
+        //     //获取像素点阵
+        //     var imageData = ctx.getImageData(0, 0, width, height);
+        //     console.log(imageData);
+        //     var pixelData = imageData.data;
+
+        //     //算法核心
+        //     for (var i = 0; i < height - 1; i++) {
+        //         for (var j = 0; j < width - 1; j++) {
+        //             //获取需要像素下标
+        //             var target = 4 * (i * width + j); //左上
+        //             var member1 = 4 * (i * width + j + 1); //右上
+        //             var member2 = 4 * ((i + 1) * width + j); //左下
+        //             var member3 = 4 * ((i + 1) * width + j + 1); //右下
+
+        //             for (var k = 0; k < 3; k++) {
+        //                 var gx = pixelData[target + k] - pixelData[member3 + k];
+        //                 var gy = pixelData[member1 + k] - pixelData[member2 + k];
+        //                 var vc = Math.abs(gx) + Math.abs(gy);
+        //                 pixelData[target + k] = vc;
+        //             }
+
+        //         }
+        //     }
+
+        //     ctx.putImageData(imageData, 0, 0, 0, 0, width, height);
+        // }
+
+        // img.src = './assets/wns.jpg'
+        // img.onload = () => {
+        //     const { width, height } = img
+        //     ctx.drawImage(img, 0, 0)
+        //     roberts(width, height)
+        // }
+
+
+    </script> -->
+
+    <script>
+
+        /** 状态管理**/
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        ctx.save()
+        ctx.fillStyle = 'red'
+        ctx.fillRect(0, 0, 100, 100)
+        ctx.restore()
+
+        ctx.fillRect(0, 100, 100, 100)
     </script>
 </body>
 
