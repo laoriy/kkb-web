@@ -9,15 +9,15 @@
 </head>
 <style>
     #canvas {
-        /* background-color: rgb(207, 204, 18); */
-        background: #000;
+        background-color: rgb(207, 204, 18);
+        /* background: #000; */
     }
 </style>
 
 <body>
-    <video id="vid" controls autoplay loop muted>
+    <!-- <video id="vid" controls autoplay loop muted>
         <source src="./assets/move.mp4" type='video/mp4'>
-    </video>
+    </video> -->
     <canvas id="canvas" width="800" height="700"></canvas>
     <!-- <script>
         /* font */
@@ -148,33 +148,221 @@
         }, 500);
 
     </script> -->
-    <script>
-        /* 夜巴黎 */
+    <!-- <script>
         // 没有提示代码解决
         /** @type {HTMLCanvasElement} */
         const canvas = document.getElementById('canvas')
         const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        /* 图片  */
         // const img = new Image()
         // img.src = './assets/dog.jpg'
         // img.onload = () => {
-        //     // 相机视图缩小，实际看到的图是放大的
+        //     // 相机视图缩小，实际看到的图是放大的,后面四个参数是对裁剪后的图进行位置大小摆放
         //     ctx.drawImage(img, img.width / 2, 0, img.width / 2, img.height, 100, 50, img.width, img.height)
         // }
 
 
         /* 播放视频 */
 
-        let interval = null;
-        vid.addEventListener('play', function () {
-            interval = setInterval(function () {
-                ctx.drawImage(vid, 0, 0);
-            }, 40);
-        })
-        vid.addEventListener('pause', function () {
-            clearInterval(interval);
-        })
+        // let interval = null;
+        // vid.addEventListener('play', function () {
+        //     interval = setInterval(function () {
+        //         ctx.drawImage(vid, 0, 0);
+        //     }, 40);
+        // })
+        // vid.addEventListener('pause', function () {
+        //     clearInterval(interval);
+        // })
 
 
+        /* 雪碧图 */
+        // 图片数量
+        const len = 8
+        // 宽高256
+        const size = 256
+
+        let fm = 0 // 当前帧
+
+        const img = new Image()
+        img.src = './assets/bomb.jpg'
+        function draw() {
+            ctx.drawImage(img, fm * size, 0, size, size, 0, 0, size, size)
+            fm++;
+            if (fm === len) {
+                fm = 0
+            }
+        }
+        img.onload = draw
+
+        setInterval(() => {
+            draw()
+        }, 100)
+    </script> -->
+
+    <!-- <script>
+        /** imageData **/
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+
+        // 1.
+        // const imgData = new ImageData(200, 200)
+        // imgData.data.forEach((ele, index) => {
+        //     imgData.data[index] = 100
+        // })
+        // ctx.putImageData(imgData, 0, 0)
+
+        // 2.
+        // const imgData = ctx.createImageData(200, 200)
+        // imgData.data.forEach((ele, index) => {
+        //     imgData.data[index] = 100
+        // })
+        // ctx.putImageData(imgData, 0, 0)
+
+        /*
+        * 3.获取canvas中的像素
+        */
+
+        // const imageData2 = ctx.getImageData(0, 0, 1, 1)
+        // console.log(imageData2);
+
+
+        // 4.
+        const img = new Image()
+        img.src = './assets/dog.jpg'
+        img.onload = () => {
+            const { width, height } = img
+            /* 绘制图形 */
+            ctx.drawImage(img, 0, 0)
+            /* 获取图像imgData */
+            const imgData = ctx.getImageData(0, 0, width, height)
+            /* 修改像素 */
+            const data = imgData.data
+            for (let i = 0; i < data.length; i += 4) {
+                data[i + 1] = 0
+            }
+
+            /* 显示imgData */
+            // ctx.putImageData(imgData, 0, height, 50, 50, 200, 200)
+            ctx.putImageData(imgData, 0, height)
+
+        }
+    </script> -->
+
+    <!-- <script>
+        /** imageData **/
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        const img = new Image()
+        /* 变灰 */
+        // img.src = './assets/river.jpg'
+        // img.onload = () => {
+        //     const { width, height } = img
+        //     /* 绘制图形 */
+        //     ctx.drawImage(img, 0, 0)
+        //     /* 获取图像imgData */
+        //     const imgData = ctx.getImageData(0, 0, width, height)
+        //     /* 修改像素 */
+        //     const data = imgData.data
+        //     for (let i = 0; i < data.length; i += 4) {
+        //         const [r, g, b] = [data[i], data[i + 1], data[i + 2]]
+
+        //         const lm = 0.299 * r + 0.587 * g + 0.114 * b;
+        //         data[i] = data[i + 1] = data[i + 2] = lm
+
+        //     }
+
+        //     /* 显示imgData */
+        //     // ctx.putImageData(imgData, 0, height, 50, 50, 200, 200)
+        //     ctx.putImageData(imgData, 0, height)
+
+        // }
+
+        // /* 马赛克 */
+
+        img.src = './assets/wns.jpg'
+        img.onload = () => {
+            const { width, height } = img
+            /* 绘制图形 */
+            ctx.drawImage(img, 0, 0)
+            /* 获取图像imgData */
+            const imgData = ctx.getImageData(0, 0, width, height)
+            /* 修改像素 */
+            const data = imgData.data
+            const size = 8
+            for (let y = 0; y < height; y += size) {
+                for (let x = 0; x < width; x += size) {
+                    const rIndex = (y * width + x) * 4
+                    const [r, g, b] = [data[rIndex], data[rIndex + 1], data[rIndex + 2]]
+                    ctx.fillStyle = `rgb(${r},${g},${b})`
+                    ctx.fillRect(x, y, size, size)
+                }
+            }
+        }
+
+        /*边缘算法*/
+        // function roberts(width, height) {
+        //     //获取像素点阵
+        //     var imageData = ctx.getImageData(0, 0, width, height);
+        //     console.log(imageData);
+        //     var pixelData = imageData.data;
+
+        //     //算法核心
+        //     for (var i = 0; i < height - 1; i++) {
+        //         for (var j = 0; j < width - 1; j++) {
+        //             //获取需要像素下标
+        //             var target = 4 * (i * width + j); //左上
+        //             var member1 = 4 * (i * width + j + 1); //右上
+        //             var member2 = 4 * ((i + 1) * width + j); //左下
+        //             var member3 = 4 * ((i + 1) * width + j + 1); //右下
+
+        //             for (var k = 0; k < 3; k++) {
+        //                 var gx = pixelData[target + k] - pixelData[member3 + k];
+        //                 var gy = pixelData[member1 + k] - pixelData[member2 + k];
+        //                 var vc = Math.abs(gx) + Math.abs(gy);
+        //                 pixelData[target + k] = vc;
+        //             }
+
+        //         }
+        //     }
+
+        //     ctx.putImageData(imageData, 0, 0, 0, 0, width, height);
+        // }
+
+        // img.src = './assets/wns.jpg'
+        // img.onload = () => {
+        //     const { width, height } = img
+        //     ctx.drawImage(img, 0, 0)
+        //     roberts(width, height)
+        // }
+
+
+    </script> -->
+
+    <script>
+
+        /** 状态管理**/
+        // 没有提示代码解决
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        ctx.save()
+        ctx.fillStyle = 'red'
+        ctx.fillRect(0, 0, 100, 100)
+        ctx.restore()
+
+        ctx.fillRect(0, 100, 100, 100)
     </script>
 </body>
 
