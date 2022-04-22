@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.26.1/axios.min.js"></script>
+    </head>
+    <body>
+        <form action="/api/save" method="post">
+            <input type="text" name="abc" value="123" />
+            <input type="submit" value="save" />
+        </form>
+        <!-- <script>
+            ;(async () => {
+                axios.defaults.baseURL = "http://localhost:3000"
+                axios.defaults.withCredentials = true
+                const res = await axios.get("/api/users", {
+                    headers: { "X-Token": "jilei" },
+                })
+                console.log("res", res.data)
+                document.writeln(`Response：${JSON.stringify(res.data)}`)
+            })()
+
+            // const img = new Image()
+            // img.src = "/api/users?button=123"
+        </script> -->
+    </body>
+</html>
