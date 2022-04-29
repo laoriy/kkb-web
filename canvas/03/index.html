@@ -7,16 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+</style>
 
 <body>
-    <canvas id="canvas"></canvas>
-    <script>
+    <canvas style="display: block;" id="canvas"></canvas>
+    <!-- <script>
+        /* 小球动画 */
         /** @type {HTMLCanvasElement} */
         const canvas = document.getElementById('canvas')
 
-        const [width, height] = [window.innerHeight, window.innerWidth]
+        const [width, height] = [window.innerWidth, window.innerHeight]
         canvas.width = width
         canvas.height = height
+        const startY = 50
+        const gravity = 0.01
+        const bounce = -0.8
         const ctx = canvas.getContext('2d')
         class Ball {
             constructor(r, color = '#000') {
@@ -38,24 +48,219 @@
         //实例化小球
         let ball = new Ball(10)
         ball.x = width / 2
-        ball.y = 50
+        ball.y = startY
         ball.draw(ctx)
         // 速度
-        const vy = 0.3
+        let vy = 0.3
         //计时器
         let time = Date.now();
-        function render() {
+
+        function animate() {
             let now = Date.now()
             let diff = now - time
             time = now
-            // console.log(diff);
+
+            vy += gravity // 加速度
+            let y = ball.y + vy * diff // 注意这里，由于diff每次时间间隔不同，所以diff * 每毫秒移动距离才是匀速运动
+
+            if (y + ball.r >= height) {
+                y = height - ball.r
+                vy *= bounce
+            }
+
+
+            ball.y = y
+        }
+        function render() {
+            animate()
             ctx.clearRect(0, 0, width, height)
-            ball.y += vy
             ball.draw(ctx)
             requestAnimationFrame(render)
         }
         render()
 
+    </script> -->
+    <script>
+        /* 粒子发射器 */
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('canvas')
+
+        const [width, height] = [window.innerWidth, window.innerHeight]
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+
+        // 粒子尺寸
+        const partSize = 24
+        //所有粒子的边界
+        const edge = { left: 0, right: width, bottom: height - 50 }
+        const gunImage = new Image()
+        const bulletImage = new Image()
+        gunImage.src = './images/gun.png'
+        bulletImage.src = './images/part.png'
+
+        class Particle {
+            constructor(width, height) {
+                this.width = width
+                this.height = height
+                // //图像源
+                // this.img = img;
+                //位置
+                this.position = { x: 0, y: 0 }
+                //1：新生，0：坠落
+                this.state = 1;
+                //父级
+                this.parent = null;
+                //速度
+                this.vx = this.getVx();
+                console.log(this.vx);
+                this.vy = 0.002;
+                //重力(加速度)
+                this.gravity = 0.03;
+                //弹力
+                this.bounce = -0.85;
+            }
+            //获取x 轴的速度，避免直上直下的弹动
+            //vx 取值范围是[-0.5,0.5]，但不能在[-0.15,0.15] 之间
+
+            getVx() {
+                const vx = Math.random() - 0.5
+                if (Math.abs(vx) < 0.15) {
+                    return this.getVx();
+                } else {
+                    return vx;
+                }
+            }
+            update(diff) {
+                const { state, width, height, position, gravity, bounce, vx, vy } = this
+                const { left, right, bottom } = edge
+                // 粒子状态为0 就要不断落出去
+                if (!state) {
+                    // vy加速度
+                    this.vy += gravity
+                    position.x += vx * diff
+                    position.y += vy * diff
+
+                    // 底部碰撞
+                    if (position.y + height > bottom) {
+                        position.y = bottom - height
+                        this.vy *= bounce
+                    }
+                    // 左右边界超出
+                    if (position.x < left || position.x > right) {
+                        this.parent.removeParticle(this)
+                    }
+                }
+            }
+
+            draw(ctx) {
+                const { position: { x, y }, width, height } = this
+                ctx.save()
+                ctx.fillRect(x, y, width, height)
+                ctx.restore()
+            }
+        }
+        // 粒子发射器
+        class Gun {
+            constructor(width, height) {
+                //大小
+                this.width = width;
+                this.height = height;
+                //位置
+                this.position = { x: 0, y: 0 }
+                //状态 1：粒子发射器的枪膛中有粒子；0：粒子发射器的枪膛中没有粒子。默认没有粒子。
+                this._state = 0
+                //粒子库
+                this.children = [];
+
+            }
+            get state() {
+                return _state
+            }
+            set state(val) {
+                // state 赋值时做简单的diff判断
+                if (this._state !== val) {
+                    // 制造一个粒子
+                    if (val) {
+                        this.createParticle()
+                    } else {
+                        this.children[0].state = 0
+                    }
+                    this._state = val
+                }
+            }
+            // 新建粒子
+            createParticle() {
+                const { position: { x, y }, width, height, children } = this
+                const part = new Particle(width, height)
+                // 设置位置
+                part.position.x = x
+                part.position.y = y
+                part.parent = this
+                // 将粒子以前置的方式加到粒子库里面
+                children.unshift(part)
+            }
+            /*删除粒子
+            * ele 粒子对象
+            * */
+            removeParticle(ele) {
+                const { children } = this
+                const index = children.indexOf(ele)
+                if (index !== -1) {
+                    children.splice(index, 1)
+                }
+            }
+            /*更新
+            * diff：以毫秒为单位的时间差
+            */
+            update(diff) {
+                this.children.forEach((ele) => {
+                    ele.update(diff)
+                })
+            }
+            drawStroke() {
+                const { position: { x, y }, width, height } = this
+                ctx.save()
+                ctx.strokeStyle = '#aaa'
+                ctx.strokeRect(x, y, width, height)
+                ctx.restore()
+            }
+        }
+
+        // 实例化粒子发射器
+
+        const gun = new Gun(partSize, partSize)
+        gun.position.x = width / 2 - 80
+        gun.position.y = 50
+        gun.state = 1
+
+        setInterval(() => {
+            gun.state = Math.round(Math.random())
+        }, 100)
+
+
+        let time = Date.now()
+
+        function updateTime() {
+            const now = Date.now()
+            const diff = now - time
+            time = now
+            return diff
+        }
+        function render() {
+
+            const diff = updateTime()
+            gun.update(diff)
+            ctx.clearRect(0, 0, width, height)
+            gun.drawStroke()
+            gun.children.forEach((ele) => {
+                ele.draw(ctx)
+            })
+
+            requestAnimationFrame(render)
+        }
+
+        render()
     </script>
 </body>
 
