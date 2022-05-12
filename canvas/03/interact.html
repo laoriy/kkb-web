@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>鼠标在canvas中的位置</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            #canvas {
+                background: antiquewhite;
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <!-- <script>
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+            const ctx = canvas.getContext("2d")
+            function getMousePos() {
+                const { clientX, clientY } = event
+                // console.log(clientX, clientY)
+                // canvas 相对于窗口的边界
+
+                const { left, top } = canvas.getBoundingClientRect()
+                // console.log(left, top)
+                // 计算鼠标在canvas中的位置
+                const [x, y] = [clientX - left, clientY - top]
+                return { x, y }
+            }
+
+            function containPoint(obj, mousePos) {
+                // 图形位置尺寸
+                const { pos, width, height } = obj
+                // 鼠标点击位置
+                const { x, y } = mousePos
+                // 计算鼠标上下左右边界的关系
+                const [t, b, r, l] = [
+                    y > pos.y,
+                    y < pos.y + height,
+                    x > pos.x,
+                    x < pos.x + width,
+                ]
+                return t && b && l && r
+            }
+            class Rectangle {
+                constructor(width, height, color = "#000") {
+                    this.width = width
+                    this.height = height
+                    this.color = color
+                    this.pos = { x: 0, y: 0 }
+                }
+                draw() {
+                    const {
+                        width,
+                        height,
+                        color,
+                        pos: { x, y },
+                    } = this
+                    ctx.save()
+                    ctx.fillStyle = color
+                    ctx.fillRect(x, y, width, height)
+                    ctx.restore()
+                }
+            }
+
+            const rect = new Rectangle(200, 100)
+            rect.pos = { x: 100, y: 100 }
+            // 鼠标位置减图形位置
+            let mouseSubObj = null
+            // 点击事件
+            canvas.addEventListener("mousedown", mousedownFn)
+            // 移动
+            canvas.addEventListener("mousemove", mousemoveFn)
+            // 鼠标抬起
+            canvas.addEventListener("mouseup", mouseupFn)
+            render()
+
+            function mousedownFn(event) {
+                const mousePos = getMousePos()
+                // 如果图形包含鼠标点
+                if (containPoint(rect, mousePos)) {
+                    mouseSubObj = {
+                        x: mousePos.x - rect.pos.x,
+                        y: mousePos.y - rect.pos.y,
+                    }
+                }
+            }
+            function mousemoveFn(event) {
+                const mousePos = getMousePos()
+                // 如果图形包含鼠标点
+                if (mouseSubObj) {
+                    // 让图形跟着走
+                    rect.pos = {
+                        x: mousePos.x - mouseSubObj.x,
+                        y: mousePos.y - mouseSubObj.y,
+                    }
+                    render()
+                }
+            }
+            function mouseupFn(event) {
+                mouseSubObj = null
+            }
+            function render() {
+                ctx.clearRect(0, 0, width, height)
+                rect.draw(ctx)
+            }
+        </script> -->
+
+        <script>
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+            const ctx = canvas.getContext("2d")
+            function getMousePos() {
+                const { clientX, clientY } = event
+                // console.log(clientX, clientY)
+                // canvas 相对于窗口的边界
+
+                const { left, top } = canvas.getBoundingClientRect()
+                // console.log(left, top)
+                // 计算鼠标在canvas中的位置
+                const [x, y] = [clientX - left, clientY - top]
+                return { x, y }
+            }
+
+            function containPoint(obj, mousePos) {
+                // 图形位置尺寸
+                const { pos, radius, startAngle, endAngle } = obj
+                // 鼠标点击位置
+                const { x, y } = mousePos
+                // 鼠标位减图形位
+                const subX = x - pos.x
+                const subY = y - pos.y
+                // 获取鼠标到圆心的距离
+                const len = Math.sqrt(subX * subX + subY * subY)
+                const b1 = len < radius
+                // 获取鼠标位减图形位的方向
+                let dir = Math.atan2(subY, subX)
+                if (dir < 0) dir += Math.PI * 2
+                // 判断鼠标向量的方向是否在扇形夹角之间
+                const b2 = dir > startAngle && dir < endAngle
+                return b1 && b2
+            }
+            class CircleAngle {
+                constructor(
+                    radius,
+                    color = "#000",
+                    startAngle = 0,
+                    endAngle = 0
+                ) {
+                    this.radius = radius
+                    this.color = color
+                    this.startAngle = startAngle
+                    this.endAngle = endAngle
+                    this.pos = { x: 0, y: 0 }
+                }
+                draw() {
+                    const {
+                        radius,
+                        color,
+                        pos: { x, y },
+                    } = this
+                    ctx.save()
+                    ctx.beginPath()
+                    ctx.moveTo(x, y)
+                    ctx.fillStyle = color
+                    ctx.arc(x, y, radius, this.startAngle, this.endAngle)
+                    ctx.closePath()
+                    ctx.fill()
+                    ctx.restore()
+                }
+            }
+            // 起始结束弧度都要大于0.或者等于0
+            const circle = new CircleAngle(50, "red", 0, Math.PI)
+            circle.pos = { x: 200, y: 400 }
+            // 鼠标位置减图形位置
+            let mouseSubObj = null
+            // 点击事件
+            canvas.addEventListener("mousedown", mousedownFn)
+            // 移动
+            canvas.addEventListener("mousemove", mousemoveFn)
+            // 鼠标抬起
+            canvas.addEventListener("mouseup", mouseupFn)
+            render()
+
+            function mousedownFn(event) {
+                const mousePos = getMousePos()
+                // 如果图形包含鼠标点
+                if (containPoint(circle, mousePos)) {
+                    mouseSubObj = {
+                        x: mousePos.x - circle.pos.x,
+                        y: mousePos.y - circle.pos.y,
+                    }
+                }
+            }
+            function mousemoveFn(event) {
+                const mousePos = getMousePos()
+                // 如果图形包含鼠标点
+                if (mouseSubObj) {
+                    // 让图形跟着走
+                    circle.pos = {
+                        x: mousePos.x - mouseSubObj.x,
+                        y: mousePos.y - mouseSubObj.y,
+                    }
+                    render()
+                }
+            }
+            function mouseupFn(event) {
+                mouseSubObj = null
+            }
+            function render() {
+                ctx.clearRect(0, 0, width, height)
+                circle.draw()
+            }
+        </script>
+    </body>
+</html>

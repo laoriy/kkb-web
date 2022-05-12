@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>样条线插值动画</title>
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+            #audio {
+                position: absolute;
+                right: 30px;
+                bottom: 30px;
+                opacity: 20%;
+                transition: opacity 200ms;
+            }
+            #audio:hover {
+                opacity: 90%;
+            }
+            #canvas {
+                background-image: url("./images/romantic.jpg");
+                background-size: cover;
+                background-position: center;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas style="display: block" id="canvas"></canvas>
+        <script src="./js/d3-color.js"></script>
+        <script src="./js/SupTween.js"></script>
+        <!-- <script>
+            /* 小球动画 */
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+            const startY = 50
+            const gravity = 0.01
+            const bounce = -0.8
+            const ctx = canvas.getContext("2d")
+            class Ball {
+                constructor(r, color = "#000") {
+                    this.color = color
+                    this.x = 0
+                    this.y = 0
+                    this.r = r
+                }
+
+                draw(ctx) {
+                    ctx.save()
+                    ctx.beginPath()
+                    ctx.fillStyle = this.color
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
+                    ctx.fill()
+                    ctx.restore()
+                }
+            }
+            //实例化小球
+            let ball = new Ball(20, "red")
+            ball.x = width / 2
+            ball.y = startY
+            ball.draw(ctx)
+
+            const tw = new TWEEN.Tween(ball)
+
+            tw.to(
+                {
+                    y: 600,
+                    color: "yellow",
+                },
+                1000
+            )
+
+            tw.start()
+            //  重复
+            tw.repeat(2)
+            // 悠悠球
+            tw.yoyo(true)
+            tw.easing(TWEEN.Easing.Bounce.Out)
+            // tw.onUpdate(function () {
+            //     console.log(this.y)
+            // })
+
+            function render() {
+                TWEEN.update()
+                ctx.clearRect(0, 0, width, height)
+                ball.draw(ctx)
+                requestAnimationFrame(render)
+            }
+            render()
+        </script> -->
+        <!-- <script>
+            /* 小球动画 */
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+            const startY = 50
+            const gravity = 0.01
+            const bounce = -0.8
+            const ctx = canvas.getContext("2d")
+            class Ball {
+                constructor(r, color = "#000") {
+                    this.color = color
+                    this.x = 0
+                    this.y = 0
+                    this.r = r
+                }
+
+                draw(ctx) {
+                    ctx.save()
+                    ctx.beginPath()
+                    ctx.fillStyle = this.color
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
+                    ctx.fill()
+                    ctx.restore()
+                }
+            }
+            //实例化小球
+            let ball = new Ball(20, "red")
+            ball.x = width / 2
+            ball.y = startY
+            ball.draw(ctx)
+
+            const tw = new TWEEN.Tween(ball)
+
+            tw.to(
+                {
+                    y: 600,
+                    color: "yellow",
+                },
+                1000
+            )
+
+            tw.start()
+            //  重复
+            tw.repeat(2)
+            // 悠悠球
+            tw.yoyo(true)
+            tw.easing(TWEEN.Easing.Bounce.Out)
+            // tw.onUpdate(function () {
+            //     console.log(this.y)
+            // })
+
+            function render() {
+                TWEEN.update()
+                ctx.clearRect(0, 0, width, height)
+                ball.draw(ctx)
+                requestAnimationFrame(render)
+            }
+            render()
+        </script> -->
+        <script>
+            /* 爱心 */
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+            const ctx = canvas.getContext("2d")
+            class Heart {
+                constructor(scale = 1, fillStyle = "rgba(255,132,0,0.2)") {
+                    //缩放
+                    this.scale = scale
+                    //填充色
+                    this.fillStyle = fillStyle
+                    //位置
+                    this.pos = { x: 0, y: 0 }
+                    //状态
+                    this.state = false
+                }
+                drawShape(ctx, color, offset = 0) {
+                    const {
+                        scale,
+                        pos: { x, y },
+                    } = this
+                    //开始绘制路径
+                    ctx.beginPath()
+                    //绘制心形子路径
+                    ctx.moveTo(0, 0)
+                    //用两个三次贝塞尔曲线组成爱心
+                    ctx.bezierCurveTo(-200, -50, -180, -300, 0, -200)
+                    ctx.bezierCurveTo(180, -300, 200, -50, 0, 0)
+                    ctx.closePath()
+                    ctx.strokeStyle = color
+                    ctx.lineWidth = 7
+                    ctx.setLineDash([15])
+                    ctx.lineDashOffset = offset
+                }
+
+                draw(ctx) {
+                    const {
+                        fillStyle,
+                        scale,
+                        pos: { x, y },
+                    } = this
+                    const colors = ["red", "yellow"]
+                    if (this.state) {
+                        colors.reverse()
+                    }
+                    //保存上下文对象的状态
+                    ctx.save()
+                    //偏移坐标系
+                    ctx.translate(x, y)
+                    //缩放
+                    ctx.scale(scale, scale)
+
+                    /*绘制填充图形*/
+                    ctx.save()
+                    this.drawShape(ctx, colors[0])
+                    //填充样式
+                    ctx.fillStyle = fillStyle
+                    ctx.fill()
+                    ctx.restore()
+
+                    /*绘制描边*/
+                    ctx.save()
+                    this.drawShape(ctx, colors[0])
+                    for (let i = 50; i > 0; i -= 2) {
+                        ctx.shadowBlur = i
+                        //以描边的方式显示路径
+                        ctx.stroke()
+                    }
+                    this.drawShape(ctx, colors[1], 15)
+                    ctx.stroke()
+                    ctx.restore()
+
+                    /*文字*/
+                    ctx.save()
+                    ctx.rotate(-Math.PI / 12)
+                    ctx.font = "bold 48px Arial"
+                    const d3Color = d3.color(fillStyle)
+                    const { r, g, b } = d3Color
+                    ctx.fillStyle = `rgba(${r},${g},${b},1)`
+                    ctx.textAlign = "center"
+                    ctx.textBaseline = "middle"
+                    ctx.fillText("睫毛弯弯", 35, -120)
+                    ctx.restore()
+
+                    ctx.restore()
+                }
+            }
+            const heart = new Heart()
+            heart.pos = { x: width / 3, y: height / 2 + 90 }
+            heart.fillStyle = "rgba(255,0,0,0.9)"
+            heart.scale = 0.7
+            // heart.draw()
+
+            //实例化Tween 对象,为其添加目标对象
+            let tween = new TWEEN.Tween(heart)
+            tween.to({ scale: 1.2, fillStyle: "rgba(255,45,139,0.5)" }, 1000)
+            tween.start()
+            tween.repeat(Infinity)
+            tween.yoyo(true)
+            //Linear, Quadratic, Cubic, Quartic, Quintic, Sinusoidal, Exponential, Circular, Elastic, Back, Bounce
+            tween.easing(TWEEN.Easing.Sinusoidal.Out)
+
+            //让爱心红、黄虚线的不断切换
+            setInterval(function () {
+                heart.state = !heart.state
+            }, 400)
+            //渲染方法
+            !(function render() {
+                //更新目标目标对象的状态
+                TWEEN.update()
+                //擦除
+                ctx.clearRect(0, 0, width, height)
+                //绘图
+                heart.draw(ctx)
+                //递归调用render 函数
+                window.requestAnimationFrame(render)
+            })()
+        </script>
+    </body>
+</html>
