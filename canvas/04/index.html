@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #canvas {
+            background: antiquewhite;
+            display: block;
+        }
+    </style>
+
+    <body>
+        <canvas id="canvas"></canvas>
+
+        <script>
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+
+            const ctx = canvas.getContext("2d")
+
+            /* 透明度合成 globalAlpha */
+            // ctx.fillRect(0, 0, 400, 200)
+            // ctx.save()
+            // ctx.globalAlpha = 0.6
+            // ctx.fillStyle = "red"
+            // ctx.fillRect(100, 100, 400, 200)
+            // ctx.restore()
+
+            // ctx.fillRect(150, 150, 400, 200)
+
+            /*路径裁剪 clip()*/
+            // ctx.beginPath()
+            // ctx.arc(300, 300, 200, 0, Math.PI * 2)
+            // ctx.stroke()
+            // ctx.save()
+
+            // ctx.clip()
+
+            // ctx.fillRect(0, 0, 600, 200)
+            // ctx.restore()
+
+            // ctx.fillRect(0, 300, 600, 200)
+
+            /* 全局合成 globalCompositeOperation  */
+            ctx.fillStyle = "orange"
+            ctx.fillRect(100, 100, 200, 200)
+            /*
+            source-over
+            source-out
+            */
+            ctx.globalCompositeOperation = "destination-over"
+
+            ctx.beginPath()
+            ctx.arc(300, 300, 100, 0, Math.PI * 2)
+            ctx.fillStyle = "green"
+            ctx.fill()
+        </script>
+    </body>
+</html>

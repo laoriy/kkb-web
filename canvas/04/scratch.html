@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,user-scalable=no" />
+        <title>刮刮乐</title>
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+            #cm {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <!--放置底图-->
+        <canvas id="cb"></canvas>
+        <!--放置遮罩图-->
+        <canvas id="cm"></canvas>
+
+        <script type="module">
+            import ImgLoader from "./jsm/ImgLoader.js"
+            import ImgRect from "./jsm/ImgRect.js"
+
+            //获取窗口的宽高
+            const [width, height] = [window.innerWidth, window.innerHeight]
+
+            //放置底图的canvas
+            /** @type {HTMLCanvasElement} */
+            const cb = document.getElementById("cb")
+            cb.width = width
+            cb.height = height
+            const ctxB = cb.getContext("2d")
+
+            //放置遮罩图的canvas
+            /** @type {HTMLCanvasElement} */
+            const cm = document.getElementById("cm")
+            cm.width = width
+            cm.height = height
+            const ctxM = cm.getContext("2d")
+
+            /* 图像源 */
+            //底图-获奖内容
+            const imgB = new Image()
+            imgB.src = "./images/ggl-back.png"
+            //遮罩图-刮奖处
+            const imgM = new Image()
+            imgM.src = "./images/ggl-mask.png"
+
+            //图像位置
+            const imgPos = { x: 50, y: 100 }
+
+            /* 两个图像加载成功后，绘图 */
+            ImgLoader.onload([imgM, imgB], loadedFn)
+            function loadedFn() {
+                //底图 rectB
+                const rectB = new ImgRect(imgB, imgPos)
+                rectB.draw(ctxB)
+
+                //遮罩图 rectM
+                const rectM = new ImgRect(imgM, imgPos)
+                rectM.draw(ctxM)
+            }
+
+            /*
+             * 建立线对象 Line
+             * 鼠标按下 - 保存状态，设置起点 moveTo(x,y)
+             * 鼠标移动 - 设置下一个点，并绘图 lineTo(x,y)
+             * 鼠标抬起 - 状态还原
+             * */
+            class Line {
+                constructor(ctx, lineWidth = 40) {
+                    this.ctx = ctx
+                    this.lineWidth = lineWidth
+                }
+
+                moveTo(x, y) {
+                    const { ctx, lineWidth } = this
+                    ctx.lineWidth = lineWidth
+                    ctx.save()
+                    ctx.beginPath(x, y)
+                    ctx.moveTo(x, y)
+                }
+                lineTo(x, y) {
+                    const { ctx } = this
+                    ctx.lineTo(x, y)
+                    ctx.stroke()
+                }
+                end() {
+                    this.ctx.restore()
+                }
+            }
+
+            /*实例化线对象 Line*/
+            const line = new Line(ctxM)
+
+            /*监听鼠标按下事件*/
+            cm.addEventListener("mousedown", function (event) {
+                /*
+                    如果是左键按下，设置全局合成方式为destination-out
+                    设置线的起点moveTo(x,y)
+                */
+                if (event.buttons === 1) {
+                    const { x, y } = getMousePos(cm, event)
+                    ctxM.globalCompositeOperation = "destination-out"
+                    line.moveTo(x, y)
+                }
+            })
+            /*监听鼠标移动事件*/
+            cm.addEventListener("mousemove", function (event) {
+                // 如果是左键按下
+                // 开始划线
+                if (event.buttons === 1) {
+                    const { x, y } = getMousePos(cm, event)
+                    line.lineTo(x, y)
+                }
+            })
+            /*监听鼠标抬起事件*/
+            cm.addEventListener("mouseup", function () {
+                line.end()
+            })
+
+            /*触摸事件*/
+            cm.addEventListener("touchstart", function (event) {
+                const { x, y } = getTouchPos(cm, event)
+                ctxM.globalCompositeOperation = "destination-out"
+                line.moveTo(x, y)
+            })
+            cm.addEventListener("touchmove", function (event) {
+                const { x, y } = getTouchPos(cm, event)
+                line.lineTo(x, y)
+            })
+            cm.addEventListener("touchend", function (event) {
+                line.end()
+            })
+            //获取鼠标位置
+            function getMousePos(canvas, event) {
+                //获取鼠标位置
+                const { clientX, clientY } = event
+                //获取canvas 边界位置
+                const { top, left } = canvas.getBoundingClientRect()
+                //计算鼠标在canvas 中的位置
+                const x = clientX - left
+                const y = clientY - top
+                return { x, y }
+            }
+            //获取触摸点位置
+            function getTouchPos(canvas, event) {
+                //获取鼠标位置
+                const { pageX, pageY } = event.changedTouches[0]
+                //获取canvas 边界位置
+                const { top, left } = canvas.getBoundingClientRect()
+                //计算鼠标在canvas 中的位置
+                const x = pageX - left
+                const y = pageY - top
+                return { x, y }
+            }
+        </script>
+    </body>
+</html>

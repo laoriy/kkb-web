@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #canvas {
+            background: antiquewhite;
+            display: block;
+        }
+    </style>
+
+    <body>
+        <img src="./images/histogram.png" alt="" />
+        <canvas id="canvas"></canvas>
+
+        <!-- <script>
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+
+            const ctx = canvas.getContext("2d")
+
+            /*------ 1.建立柱体 Rectangle -------*/
+            /*建立矩形对象 Rectangle
+             * 属性：
+             * width 宽度
+             * height 高度
+             * color 颜色
+             * pos 位置
+             * 方法：
+             * draw(ctx)
+             * */
+
+            class Rectangle {
+                constructor(width, height, color = "chocolate") {
+                    this.width = width
+                    this.height = height
+                    this.color = color
+                    this.text = ""
+                    this.pos = {
+                        x: 0,
+                        y: 0,
+                    }
+                }
+
+                draw(/** @type {CanvasRenderingContext2D} */ ctx) {
+                    const {
+                        width,
+                        height,
+                        color,
+                        pos: { x, y },
+                    } = this
+                    ctx.save()
+                    ctx.fillStyle = color
+                    ctx.fillRect(x, y, width, height)
+                    ctx.restore()
+                }
+            }
+
+            const item = new Rectangle(100, 400)
+            item.pos.x = 100
+            item.pos.y = 100
+            item.text = "1000"
+            item.draw(ctx)
+
+            /*------ 2.建立提示框 Tip -------*/
+            /*建立提示框 Tip
+             * 属性：
+             * text 文字内容
+             * pos 位置
+             * visible 可见性
+             * 方法：
+             * draw(ctx)
+             *
+             * 绘制背景：
+             * 设置填充色 'rgba(0,0,0,0.6)'
+             * 设置字体 '12px Arial'
+             * 获取文字宽度width： measureText(text).width
+             * 绘制填充矩形：fillRect(x,y,width,30)
+             *
+             * 绘制文字：
+             * 水平居中
+             * 垂直居中
+             * 填充色为白色
+             * 绘制文字 fillText(text,x+width/2,y+15);
+             *
+             * */
+
+            class Tip {
+                constructor(params) {
+                    this.text = ""
+                    this.pos = { x: 0, y: 0 }
+                    this.visible = false
+                }
+                draw(/** @type {CanvasRenderingContext2D} */ ctx) {
+                    const {
+                        text,
+                        pos: { x, y },
+                        visible,
+                    } = this
+
+                    if (!visible) return
+                    ctx.save()
+                    ctx.font = "36px Arial"
+                    ctx.textAlign = "center"
+                    ctx.textBaseline = "middle"
+                    ctx.fillStyle = "rgba(0,0,0,0.7)"
+                    const mt = ctx.measureText(text)
+                    const rectW = mt.width + 30
+                    const rectH = 40
+
+                    ctx.fillRect(x, y, rectW, 40)
+
+                    const [tx, ty] = [rectW / 2 + x, rectH / 2 + y]
+                    ctx.fillStyle = "#fff"
+
+                    ctx.fillText(text, tx, ty)
+
+                    ctx.restore()
+                }
+            }
+
+            const tip = new Tip()
+            // tip.text = "canvas"
+            // tip.pos.x = 50
+            // tip.pos.y = 50
+            // tip.visible = true
+            // tip.draw(ctx)
+
+            /*------ 3.鼠标划入划出的事件 -------*/
+            canvas.addEventListener("mousemove", mousemoveFn)
+            function mousemoveFn(event) {
+                const mousePos = getMousePos(event)
+
+                /*判断鼠标是否在矩形中
+                 * 如果在，就显示提示文字，设置文字位置和内容
+                 * 如果不在，就隐藏提示文字
+                 * */
+                if (containPoint(item, mousePos)) {
+                    tip.visible = true
+                    tip.text = item.text
+                    tip.pos = {
+                        x: mousePos.x + 20,
+                        y: mousePos.y + 40,
+                    }
+                } else {
+                    tip.visible = false
+                }
+                render()
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, width, height)
+
+                item.draw(ctx)
+                tip.draw(ctx)
+            }
+
+            //判断点是否矩形中
+            function containPoint(obj, mousePos) {
+                const { x, y } = mousePos
+                const { pos, width, height } = obj
+                const t = y > pos.y
+                const b = y < pos.y + height
+                const l = x > pos.x
+                const r = x < pos.x + width
+                return t && b && l && r
+            }
+
+            //获取鼠标位置
+            function getMousePos(event) {
+                //获取鼠标位置
+                const { clientX, clientY } = event
+                //获取canvas 边界位置
+                const { top, left } = canvas.getBoundingClientRect()
+                //计算鼠标在canvas 中的位置
+                const x = clientX - left
+                const y = clientY - top
+                return { x, y }
+            }
+        </script> -->
+        <script>
+            /** @type {HTMLCanvasElement} */
+            const canvas = document.getElementById("canvas")
+
+            const [width, height] = [window.innerWidth, window.innerHeight]
+            canvas.width = width
+            canvas.height = height
+
+            const ctx = canvas.getContext("2d")
+
+            /*======== 一，声明必备数据 ==========*/
+            //系列标签
+            const seriesBabel = ["T恤", "夹克", "护甲背心", "迷彩服", "防弹衣"]
+            //系列数据
+            const seriesData = [11121, 2425, 6277, 4253, 7355]
+            //y 轴行数
+            let rowNum = 5
+            //柱状图的位置
+            const pos = { x: 50, y: 0 }
+            //柱状图宽高
+            const [outWidth, outHeight] = [750, 600]
+            //柱状图内边距
+            const pad = 80
+            //柱状图百分比类型的列边距
+            const colPerPad = 0.1
+            //刻度的长度
+            const markLen = 10
+            //标签文字的偏移距离
+            const babelOffset = 8
+            //系列图形的颜色
+            const itemColor = "chocolate"
+
+            /*======== 二，构建数据 ==========*/
+            /*------ 1.计算基本数据 -------*/
+            //绘图区宽高
+            const innerWidth = outWidth - pad * 2
+            const innerHeight = outHeight - pad * 2
+            //绘图区的顶部位置
+            const innerTop = pos.y + pad
+            //绘图区的底部位置
+            const innerBottom = innerTop + innerHeight
+            //绘图区的左侧位置
+            const innerLeft = pos.x + pad
+            //绘图区的右侧位置
+            const innerRight = innerLeft + innerWidth
+            //x 轴刻度的终点的y位置
+            const xMarkEndY = innerBottom + markLen
+            //x 轴标签的y位置
+            const xBabelY = innerBottom + babelOffset
+            //y 轴刻度的终点的x位置
+            const yMarkEndX = innerLeft - markLen
+            //y 轴标签的x位置
+            const yBabelX = yMarkEndX - babelOffset
+
+            /*------ 2.计算y 轴向的数据 -------*/
+            //y 轴数据的最大值
+            const maxDataY = Math.max(...seriesData)
+            //基于标签的行高
+            const rowBabelSize = getRowSize(maxDataY, rowNum)
+            //行数,上舍
+            rowNum = Math.round(maxDataY / rowBabelSize)
+            //y 轴标签的最大值
+            const maxBabelY = rowBabelSize * rowNum
+            //基于像素的行高
+            const rowSize = innerHeight / rowNum
+            //y 轴标签的值的集合
+            const yBabelsVal = []
+            //y 轴刻度的y位置的集合
+            const yMarksY = []
+            //遍历行数
+            for (let r = 0; r < rowNum + 1; r++) {
+                //y 轴标签的值的集合
+                yBabelsVal.push(maxBabelY - rowBabelSize * r)
+                //y 轴刻度的y位置的集合
+                yMarksY.push(innerTop + rowSize * r)
+            }
+            //计算行高 - 行高取整 - 扩展
+            function getRowSize(maxDataY, rowNum) {
+                //将最大尺寸均分成rowNum 段
+                const size = maxDataY / rowNum
+                //将均分值的字符长度的一半作为幂
+                const a = Math.floor(size.toString().length / 2)
+                console.log(size.toString().length, a)
+                //计算以10 为底的b 次幂
+                const b = Math.pow(10, a)
+                //将均分值的最后b 位数变成0
+                const c = parseInt(size / b) * b
+                //行高不能小于0
+                return Math.max(c, 1)
+            }
+
+            /*------ 3.系列图形的数据 -------*/
+            //列数
+            const colNum = seriesBabel.length
+            //列宽
+            const colSize = innerWidth / colNum
+            //列的内边距
+            const colPad = colSize * colPerPad
+            //柱体宽度
+            const itemWidth = colSize - colPad * 2
+            //x 轴刻度的x 位置信息
+            const xMarksX = []
+            //x 轴标签的x 位置信息
+            const xBablesX = []
+            //柱状体x的位置信息
+            const itemsX = []
+            //柱状体的高度信息
+            const itemsHeight = []
+            //柱体的y位置信息
+            const itemsY = []
+            //遍历x 轴刻度标签
+            seriesBabel.forEach((ele, ind) => {
+                //基本x 位
+                const basicX = innerLeft + colSize * ind
+                //x 轴刻度的x 位置信息
+                xMarksX.push(basicX + colSize)
+                //x 轴标签的x 位置信息
+                xBablesX.push(basicX + colSize / 2)
+                //柱状体的x 位置信息
+                itemsX.push(basicX + colPad)
+                //柱体的高度信息
+                const itemH = (seriesData[ind] / maxBabelY) * innerHeight
+                itemsHeight.push(itemH)
+                //柱状体的y位置信息
+                itemsY.push(innerBottom - itemH)
+            })
+
+            /*======== 三，基于数据绘图 ==========*/
+            /*------ 1.系列图形（柱体）的绘制 -------*/
+            /*建立矩形对象 Rectangle
+             * 属性：
+             * width 宽度
+             * height 高度
+             * color 颜色
+             * pos 位置
+             * 方法：
+             * draw(ctx)
+             * */
+            class Rectangle {
+                constructor(width = 0, height = 0, color = "#000") {
+                    this.width = width
+                    this.height = height
+                    this.color = color
+                    this.pos = { x: 0, y: 0 }
+                }
+                draw(ctx) {
+                    ctx.save()
+                    const {
+                        pos: { x, y },
+                        width,
+                        height,
+                        color,
+                    } = this
+                    ctx.fillStyle = color
+                    ctx.fillRect(x, y, width, height)
+                    ctx.restore()
+                }
+            }
+            //绘制柱体
+            //建立柱体集合
+            const series = []
+            //遍历系列标签seriesBabel 实例化矩形对象，并将其添加到柱体集合
+            seriesBabel.forEach((ele, ind) => {
+                const item = new Rectangle(
+                    itemWidth,
+                    itemsHeight[ind],
+                    itemColor
+                )
+                item.pos.x = itemsX[ind]
+                item.pos.y = itemsY[ind]
+                item.text = ele
+                series.push(item)
+            })
+
+            /*------ 2.坐标的绘制 drawCoord(ctx) -------*/
+            function drawCoord(ctx) {
+                /*------ 绘制y 轴图形 -------*/
+                //y轴
+                drawLine(ctx, innerLeft, innerTop, innerLeft, innerBottom)
+                //遍历y 轴刻度标签
+                yBabelsVal.forEach((ele, ind) => {
+                    //y轴刻度
+                    drawLine(
+                        ctx,
+                        innerLeft,
+                        yMarksY[ind],
+                        yMarkEndX,
+                        yMarksY[ind]
+                    )
+                    //y轴标签
+                    drawText(ctx, ele, yBabelX, yMarksY[ind], "right", "middle")
+                    //绘图区辅助线
+                    if (ind !== rowNum) {
+                        drawLine(
+                            ctx,
+                            innerLeft,
+                            yMarksY[ind],
+                            innerRight,
+                            yMarksY[ind],
+                            "rgba(0,0,0,0.3)"
+                        )
+                    }
+                })
+                /*------ 绘制x 轴图形 -------*/
+                //x轴
+                drawLine(ctx, innerLeft, innerBottom, innerRight, innerBottom)
+                //遍历x 轴刻度标签
+                seriesBabel.forEach((ele, ind) => {
+                    //x轴刻度
+                    drawLine(
+                        ctx,
+                        xMarksX[ind],
+                        innerBottom,
+                        xMarksX[ind],
+                        xMarkEndY
+                    )
+                    //x轴标签
+                    drawText(ctx, ele, xBablesX[ind], xBabelY, "center", "top")
+                })
+            }
+            /*绘制线的方法 drawLine(ctx,x1,y1,x2,y2,color='#000')
+             * lineCap='square'
+             * */
+            function drawLine(ctx, x1, y1, x2, y2, color = "#000") {
+                ctx.save()
+                ctx.beginPath()
+                ctx.moveTo(x1, y1)
+                ctx.lineTo(x2, y2)
+                ctx.lineCap = "square"
+                ctx.strokeStyle = color
+                ctx.stroke()
+                ctx.restore()
+            }
+            /*绘制文字的方法 drawText(ctx,text,x,y,textAlign,textBaseline)
+             * font='12px Arial'
+             * */
+            function drawText(ctx, text, x, y, textAlign, textBaseline) {
+                ctx.save()
+                ctx.font = "14px Arial"
+                ctx.textAlign = textAlign
+                ctx.textBaseline = textBaseline
+                ctx.fillText(text, x, y)
+                ctx.restore()
+            }
+            /*======== 四，鼠标交互 ==========*/
+            /*建立提示框 Tip
+             * 属性：
+             * text 文字内容
+             * pos 位置
+             * visible 可见性
+             * 方法：
+             * draw(ctx)
+             *
+             * 背景：
+             * fillStyle='rgba(0,0,0,0.6)'
+             * 高度 30
+             * 文字：
+             * font='12px Arial'
+             * textAlign='center'
+             * textBaseline='middle'
+             * fillStyle='#fff'
+             * 左右内边距 36
+             * 上方偏移 18
+             * */
+            class Tip {
+                constructor(text = "") {
+                    this.text = text
+                    this.pos = { x: 0, y: 0 }
+                    this.visible = false
+                }
+                draw(ctx) {
+                    const {
+                        pos: { x, y },
+                        text,
+                        visible,
+                    } = this
+                    if (!visible) {
+                        return
+                    }
+                    ctx.save()
+                    ctx.fillStyle = "rgba(0,0,0,0.6)"
+                    ctx.font = "14px Arial"
+                    const width = ctx.measureText(text).width + 36
+                    ctx.fillRect(x, y, width, 30)
+                    ctx.textAlign = "center"
+                    ctx.textBaseline = "middle"
+                    ctx.fillStyle = "#fff"
+                    ctx.fillText(text, x + width / 2, y + 15)
+                    ctx.restore()
+                }
+            }
+            //实例化提示框
+            const tip = new Tip()
+
+            //监听鼠标移动事件
+            canvas.addEventListener("mousemove", mousemoveFn)
+            function mousemoveFn(event) {
+                //鼠标位置
+                const mousePos = getMousePos(event)
+                //遍历系列
+                //判断鼠标是否在系列元素中
+                //如果在，就显示提示文字，设置文字位置和内容
+                //如果不在，就隐藏提示文字
+                for (let item of series) {
+                    if (containPoint(item, mousePos)) {
+                        tip.visible = true
+                        tip.pos.x = mousePos.x + 10
+                        tip.pos.y = mousePos.y + 20
+                        tip.text = item.text
+                        break
+                    } else {
+                        tip.visible = false
+                    }
+                }
+                render()
+            }
+
+            //渲染
+            render()
+            //渲染方法
+            function render() {
+                ctx.clearRect(0, 0, width, height)
+                //绘制坐标系
+                drawCoord(ctx)
+                //绘制系列图像
+                series.forEach((ele) => {
+                    ele.draw(ctx)
+                })
+                //提示框
+                tip.draw(ctx)
+            }
+
+            //判断点是否在图形中
+            function containPoint(obj, mousePos) {
+                const { x, y } = mousePos
+                const { pos, width, height } = obj
+                const t = y > pos.y
+                const b = y < pos.y + height
+                const l = x > pos.x
+                const r = x < pos.x + width
+                return t && b && l && r
+            }
+            //获取鼠标位置
+            function getMousePos(event) {
+                //获取鼠标位置
+                const { clientX, clientY } = event
+                //获取canvas 边界位置
+                const { top, left } = canvas.getBoundingClientRect()
+                //计算鼠标在canvas 中的位置
+                const x = clientX - left
+                const y = clientY - top
+                return { x, y }
+            }
+        </script>
+    </body>
+</html>
