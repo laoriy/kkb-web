@@ -11,11 +11,11 @@
             margin: 0;
             padding: 0;
         }
-        #canvas {
+        /* #canvas {
             background-image: url("./images/back.jpg");
             background-size: cover;
             background-position: center;
-        }
+        } */
     </style>
 
     <body>
@@ -285,6 +285,9 @@
             imgS.src = "./images/s.png"
             const imgO = new Image()
             imgO.src = "./images/o.png"
+            const back = new Image()
+            back.src = "./images/back.jpg"
+
             // 粒子尺寸
             const partSize = 24
             //所有粒子的边界
@@ -669,7 +672,12 @@
                 const diff = updateTime()
                 //更新时钟的时间
                 clock.update(diff)
-                ctx.clearRect(0, 0, width, height)
+                // ctx.clearRect(0, 0, width, height)
+                ctx.save()
+                ctx.globalAlpha = 0.2
+                ctx.im
+                ctx.drawImage(back, 0, 0, width, height)
+                ctx.restore()
                 clock.draw(ctx)
 
                 requestAnimationFrame(render)
