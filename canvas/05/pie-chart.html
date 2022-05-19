@@ -1,280 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-    </head>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    #canvas {
+        background: antiquewhite;
+        display: block;
+    }
+</style>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById("canvas")
+
+        const [width, height] = [window.innerWidth, window.innerHeight]
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext("2d")
+
+        /*------ 1.扇形  -------*/
+
+        class Sector {
+            constructor(radius, startAngle, endAngle, color) {
+                //半径
+                this.radius = 0
+                this.startAngle = startAngle
+                this.endAngle = endAngle
+                this.color = color
+                this.pos = { x: 0, y: 0 }
+                //数据data
+                this.data = 0
+
+                /*标签属性*/
+                //点位
+                this.v1 = { x: 0, y: 0 }
+                this.v3 = { x: 0, y: 0 }
+                this.v4 = { x: 0, y: 0 }
+                this.v5 = { x: 0, y: 0 }
+                // 标签内容text
+                this.text = ""
+                // 文字的对齐方式
+                this.textAlign = "left"
+                // 半径的变化速度 vr 0
+                this.vr = 0
+                // 半径的加速度
+                this.ar = 0.03
+                //半径的弹性 bounce -0.6
+                this.bounce = -0.6
+                //实际半径 basicR
+                this.basicR = radius
+
+                //鼠标划上时，变大后的扩展半径 bigR
+                this.bigR = 0
+                /*动画的状态 state
+                * 0 生长状态
+                * 1 扩展状态
+                * 2 收缩状态
+                * */
+                this.state = 0
+            }
+            /*更新引导线点位*/
+            updateV() {
+                const {
+                    radius,
+                    basicR,
+                    startAngle,
+                    endAngle,
+                    pos: { x, y },
+                } = this
+                //引线方向 dir，起始弧度+扇形弧度的一半
+                const dir = startAngle + (endAngle - startAngle) / 2
+                /*v1 的位置*/
+                //v1到圆心的距离len1，偏移22
+                const len1 = basicR + 22
+
+                //设置v1点位，相对于圆心的位置+圆心位
+                this.v1 = {
+                    x: Math.cos(dir) * len1 + x,
+                    y: Math.sin(dir) * len1 + y,
+                }
+                /*v2 的位置*/
+                //v2到圆心的距离len2，偏移70
+                const len2 = basicR + 70
+                //设置v2点位，相对于圆心的位置+圆心位
+                this.v2 = {
+                    x: Math.cos(dir) * len2 + x,
+                    y: Math.sin(dir) * len2 + y,
+                }
+
+                /*基于第一段引导线的方向，设置第二段引导线和标签的水平对齐
+                 * n ：1 向右，-1 向左
+                 * 判断方式：Math.cos(dir) 是否小于0
+                 * */
+
+                let n = 1
+                if (Math.cos(dir) < 0) {
+                    n = -1
+                    this.textAlign = "right"
+                }
+
+                /*v3 的位置*/
+                //基于v2 水平偏移20
+                this.v3 = {
+                    x: this.v2.x + 20 * n,
+                    y: this.v2.y,
+                }
+
+                /*v4 的位置*/
+                //基于v3 水平偏移10
+                this.v4 = {
+                    x: this.v3.x + 10 * n,
+                    y: this.v2.y,
+                }
+                //扩展半径 bigR，基于实际半径偏移20 ------------
+                this.bigR = this.bigR + 20
+            }
+            updateR(diff) {
+                switch (this.state) {
+                    case 0:
+                        this.expand(diff, this.basicR)
+                        break;
+                    case 1:
+                        this.expand(diff, this.bigR)
+                        break;
+                    case 2:
+                        this.shrink(diff, this.basicR)
+                        break;
+                    default:
+                        break;
+                }
+            }
+            /*半径扩大动画expand （时间差，结束状态）*/
+            expand(diff, endR) {
+                //解构加速度，弹力
+                const { ar, bounce } = this;
+                //速度+=加速度
+                this.vr += ar
+                //设置半径+=速度*时间差
+                this.radius += this.vr * diff
+                /*触底反弹，大于终点
+                * 设置半径
+                * 速度*弹力
+                * */
+                if (this.radius > endR) {
+                    this.radius = endR
+                    this.vr *= bounce
+                }
+
+            }
+            /*半径收缩动画（时间差，结束状态）*/
+            shrink(diff, endR) {
+                //解构加速度，弹力
+                const { ar, bounce } = this;
+                //速度-加速度
+                // this.vr += ar
+                //设置半径-=速度*时间差
+
+                /*触底反弹，小于终点
+                * 设置半径
+                * 速度*弹力
+                * */
+
+            }
+
+            draw(/** @type {CanvasRenderingContext2D} */ ctx) {
+                const {
+                    pos: { x, y },
+                    radius,
+                    startAngle,
+                    endAngle,
+                    color,
+                    v1,
+                    v2,
+                    v3,
+                    v4,
+                    text,
+                    textAlign,
+                } = this
+
+                //保存状态
+                ctx.save()
+                /*绘制扇形 arc() */
+                ctx.beginPath()
+                ctx.moveTo(x, y)
+                ctx.arc(x, y, radius, startAngle, endAngle)
+                ctx.fillStyle = color
+                ctx.fill()
+                /*绘制引导线 lineTo() */
+                ctx.beginPath()
+                ctx.moveTo(v1.x, v1.y)
+                ctx.lineTo(v2.x, v2.y)
+                ctx.lineTo(v3.x, v3.y)
+                ctx.stroke()
+                /*绘制标签文字 fillText()*/
+                ctx.fillStyle = "#000"
+                ctx.textBaseline = "middle"
+                ctx.textAlign = textAlign
+                ctx.font = "14px Arial"
+                ctx.fillText(text, v4.x, v4.y)
+                //还原上一次保存的状态
+                ctx.restore()
+            }
         }
-        #canvas {
-            background: antiquewhite;
-            display: block;
+
+        const item = new Sector(
+            180,
+            Math.PI,
+            (Math.PI * 3) / 2,
+            "chocolate"
+        )
+        item.pos = { x: width / 2, y: height / 2 }
+        item.text = "防弹衣"
+        item.data = 1000
+        item.updateV()
+        item.draw(ctx)
+
+        /*------ 2.建立提示框 Tip -------*/
+        /*建立提示框 Tip
+         * 属性：
+         * text 文字内容
+         * pos 位置
+         * visible 可见性
+         * 方法：
+         * draw(ctx)
+         *
+         * 绘制背景：
+         * 设置填充色 'rgba(0,0,0,0.6)'
+         * 设置字体 '12px Arial'
+         * 获取文字宽度width： measureText(text).width
+         * 绘制填充扇形：fillRect(x,y,width,30)
+         *
+         * 绘制文字：
+         * 水平居中
+         * 垂直居中
+         * 填充色为白色
+         * 绘制文字 fillText(text,x+width/2,y+15);
+         *
+         * */
+        class Tip {
+            constructor() {
+                this.text = ""
+                this.pos = { x: 0, y: 0 }
+                this.visible = false
+            }
+            draw(ctx) {
+                const {
+                    pos: { x, y },
+                    text,
+                    visible,
+                } = this
+                if (!visible) {
+                    return
+                }
+                ctx.save()
+                ctx.fillStyle = "rgba(0,0,0,0.6)"
+                ctx.font = "14px Arial"
+                const width = ctx.measureText(text).width + 36
+                ctx.fillRect(x, y, width, 30)
+                ctx.textAlign = "center"
+                ctx.textBaseline = "middle"
+                ctx.fillStyle = "#fff"
+                ctx.fillText(text, x + width / 2, y + 15)
+                ctx.restore()
+            }
         }
-    </style>
+        //实例化提示框
+        const tip = new Tip()
 
-    <body>
-        <canvas id="canvas"></canvas>
+        //监听鼠标移动事件
+        canvas.addEventListener("mousemove", mousemoveFn)
+        function mousemoveFn(event) {
+            //鼠标位置
+            const mousePos = getMousePos(event)
 
-        <script>
-            /** @type {HTMLCanvasElement} */
-            const canvas = document.getElementById("canvas")
-
-            const [width, height] = [window.innerWidth, window.innerHeight]
-            canvas.width = width
-            canvas.height = height
-
-            const ctx = canvas.getContext("2d")
-
-            /*------ 1.扇形  -------*/
-
-            class Sector {
-                constructor(radius, startAngle, endAngle, color) {
-                    //半径
-                    this.radius = radius
-                    this.startAngle = startAngle
-                    this.endAngle = endAngle
-                    this.color = color
-                    this.pos = { x: 0, y: 0 }
-                    //数据data
-                    this.data = 0
-
-                    /*标签属性*/
-                    //点位
-                    this.v1 = { x: 0, y: 0 }
-                    this.v3 = { x: 0, y: 0 }
-                    this.v4 = { x: 0, y: 0 }
-                    this.v5 = { x: 0, y: 0 }
-                    // 标签内容text
-                    this.text = ""
-                    // 文字的对齐方式
-                    this.textAlign = "left"
+            //判断鼠标是否在扇形中
+            //如果在，就显示提示文字，设置文字位置和内容
+            //如果不在，就隐藏提示文字
+            if (containPoint(item, mousePos)) {
+                tip.visible = true
+                tip.pos = {
+                    x: mousePos.x,
+                    y: mousePos.y,
                 }
-                /*更新引导线点位*/
-                updateV() {
-                    const {
-                        radius,
-                        startAngle,
-                        endAngle,
-                        pos: { x, y },
-                    } = this
-                    //引线方向 dir，起始弧度+扇形弧度的一半
-                    const dir = startAngle + (endAngle - startAngle) / 2
-                    /*v1 的位置*/
-                    //v1到圆心的距离len1，偏移22
-                    const len1 = radius + 22
-
-                    //设置v1点位，相对于圆心的位置+圆心位
-                    this.v1 = {
-                        x: Math.cos(dir) * len1 + x,
-                        y: Math.sin(dir) * len1 + y,
-                    }
-                    /*v2 的位置*/
-                    //v2到圆心的距离len2，偏移70
-                    const len2 = radius + 70
-                    //设置v2点位，相对于圆心的位置+圆心位
-                    this.v2 = {
-                        x: Math.cos(dir) * len2 + x,
-                        y: Math.sin(dir) * len2 + y,
-                    }
-
-                    /*基于第一段引导线的方向，设置第二段引导线和标签的水平对齐
-                     * n ：1 向右，-1 向左
-                     * 判断方式：Math.cos(dir) 是否小于0
-                     * */
-
-                    let n = 1
-                    if (Math.cos(dir) < 0) {
-                        n = -1
-                        this.textAlign = "right"
-                    }
-
-                    /*v3 的位置*/
-                    //基于v2 水平偏移20
-                    this.v3 = {
-                        x: this.v2.x + 20 * n,
-                        y: this.v2.y,
-                    }
-
-                    /*v4 的位置*/
-                    //基于v3 水平偏移10
-                    this.v4 = {
-                        x: this.v3.x + 10 * n,
-                        y: this.v2.y,
-                    }
-                }
-
-                draw(/** @type {CanvasRenderingContext2D} */ ctx) {
-                    const {
-                        pos: { x, y },
-                        radius,
-                        startAngle,
-                        endAngle,
-                        color,
-                        v1,
-                        v2,
-                        v3,
-                        v4,
-                        text,
-                        textAlign,
-                    } = this
-
-                    //保存状态
-                    ctx.save()
-                    /*绘制扇形 arc() */
-                    ctx.beginPath()
-                    ctx.moveTo(x, y)
-                    ctx.arc(x, y, radius, startAngle, endAngle)
-                    ctx.fillStyle = color
-                    ctx.fill()
-                    /*绘制引导线 lineTo() */
-                    ctx.beginPath()
-                    ctx.moveTo(v1.x, v1.y)
-                    ctx.lineTo(v2.x, v2.y)
-                    ctx.lineTo(v3.x, v3.y)
-                    ctx.stroke()
-                    /*绘制标签文字 fillText()*/
-                    ctx.fillStyle = "#000"
-                    ctx.textBaseline = "middle"
-                    ctx.textAlign = textAlign
-                    ctx.font = "14px Arial"
-                    ctx.fillText(text, v4.x, v4.y)
-                    //还原上一次保存的状态
-                    ctx.restore()
-                }
+                tip.text = item.text
+            } else {
+                tip.visible = false
             }
+            //按需渲染
+            render()
+        }
+        //计时器 time -----------------
+        let time = Date.now()
+        //渲染
+        render();
+        //渲染方法
+        function render() {
+            //获取时间差
+            let nowTime = Date.now()
+            const diff = nowTime - time
+            time = nowTime
 
-            const item = new Sector(
-                180,
-                Math.PI,
-                (Math.PI * 3) / 2,
-                "chocolate"
-            )
-            item.pos = { x: width / 2, y: height / 2 }
-            item.text = "防弹衣"
-            item.data = 1000
-            item.updateV()
-            item.draw(ctx)
+            //清理画布
+            ctx.clearRect(0, 0, width, height);
+            //更新半径--------------
+            item.updateR(diff)
+            //绘制系列图像
+            item.draw(ctx);
+            //提示框
+            tip.draw(ctx);
 
-            /*------ 2.建立提示框 Tip -------*/
-            /*建立提示框 Tip
-             * 属性：
-             * text 文字内容
-             * pos 位置
-             * visible 可见性
-             * 方法：
-             * draw(ctx)
-             *
-             * 绘制背景：
-             * 设置填充色 'rgba(0,0,0,0.6)'
-             * 设置字体 '12px Arial'
-             * 获取文字宽度width： measureText(text).width
-             * 绘制填充扇形：fillRect(x,y,width,30)
-             *
-             * 绘制文字：
-             * 水平居中
-             * 垂直居中
-             * 填充色为白色
-             * 绘制文字 fillText(text,x+width/2,y+15);
-             *
-             * */
-            class Tip {
-                constructor() {
-                    this.text = ""
-                    this.pos = { x: 0, y: 0 }
-                    this.visible = false
-                }
-                draw(ctx) {
-                    const {
-                        pos: { x, y },
-                        text,
-                        visible,
-                    } = this
-                    if (!visible) {
-                        return
-                    }
-                    ctx.save()
-                    ctx.fillStyle = "rgba(0,0,0,0.6)"
-                    ctx.font = "14px Arial"
-                    const width = ctx.measureText(text).width + 36
-                    ctx.fillRect(x, y, width, 30)
-                    ctx.textAlign = "center"
-                    ctx.textBaseline = "middle"
-                    ctx.fillStyle = "#fff"
-                    ctx.fillText(text, x + width / 2, y + 15)
-                    ctx.restore()
-                }
+            //连线渲染------------
+            requestAnimationFrame(render)
+        }
+
+        //判断点是否在图形中
+        function containPoint(obj, mousePos) {
+            const { pos, radius, startAngle, endAngle } = obj
+            const { x, y } = mousePos
+            //鼠标位减图形位
+            const [subX, subY] = [x - pos.x, y - pos.y]
+            //获取鼠标到圆心的距离
+            const len = Math.sqrt(subX * subX + subY * subY)
+            //判断鼠标到圆心的距离是否小于半径
+            const b1 = len < radius
+
+            //获取鼠标位减图形位的方向 dir
+            let dir = Math.atan2(subY, subX)
+            if (dir < 0) {
+                dir += Math.PI * 2
             }
-            //实例化提示框
-            const tip = new Tip()
-
-            //监听鼠标移动事件
-            canvas.addEventListener("mousemove", mousemoveFn)
-            function mousemoveFn(event) {
-                //鼠标位置
-                const mousePos = getMousePos(event)
-
-                //判断鼠标是否在扇形中
-                //如果在，就显示提示文字，设置文字位置和内容
-                //如果不在，就隐藏提示文字
-                if (containPoint(item, mousePos)) {
-                    tip.visible = true
-                    tip.pos = {
-                        x: mousePos.x,
-                        y: mousePos.y,
-                    }
-                    tip.text = item.text
-                } else {
-                    tip.visible = false
-                }
-                //按需渲染
-                render()
-            }
-
-            //渲染方法
-            function render() {
-                ctx.clearRect(0, 0, width, height)
-                //绘制系列图像
-                item.draw(ctx)
-                //提示框
-                tip.draw(ctx)
-            }
-
-            //判断点是否在图形中
-            function containPoint(obj, mousePos) {
-                const { pos, radius, startAngle, endAngle } = obj
-                const { x, y } = mousePos
-                //鼠标位减图形位
-                const [subX, subY] = [x - pos.x, y - pos.y]
-                //获取鼠标到圆心的距离
-                const len = Math.sqrt(subX * subX + subY * subY)
-                //判断鼠标到圆心的距离是否小于半径
-                const b1 = len < radius
-
-                //获取鼠标位减图形位的方向 dir
-                let dir = Math.atan2(subY, subX)
-                if (dir < 0) {
-                    dir += Math.PI * 2
-                }
-                //判断鼠标向量的方向是否在扇形的夹角之间
-                const b2 = dir > startAngle && dir < endAngle
-                return b1 && b2
-            }
+            //判断鼠标向量的方向是否在扇形的夹角之间
+            const b2 = dir > startAngle && dir < endAngle
+            return b1 && b2
+        }
+        //获取鼠标位置
+        function getMousePos(event) {
             //获取鼠标位置
-            function getMousePos(event) {
-                //获取鼠标位置
-                const { clientX, clientY } = event
-                //获取canvas 边界位置
-                const { top, left } = canvas.getBoundingClientRect()
-                //计算鼠标在canvas 中的位置
-                const x = clientX - left
-                const y = clientY - top
-                return { x, y }
-            }
-        </script>
-    </body>
+            const { clientX, clientY } = event
+            //获取canvas 边界位置
+            const { top, left } = canvas.getBoundingClientRect()
+            //计算鼠标在canvas 中的位置
+            const x = clientX - left
+            const y = clientY - top
+            return { x, y }
+        }
+    </script>
+</body>
+
 </html>
