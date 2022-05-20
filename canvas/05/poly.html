@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>柱状图</title>
+    <style>
+        html, body {margin: 0;height: 100%;}
+        #rec {width: 100%;height: 100%;}
+    </style>
+</head>
+<body>
+<div id="rec"></div>
+<script src="js/lv.js"></script>
+<script>
+    //建立渲染器
+    const renderer=new Renderer({rec:'rec'});
+    const {rec,canvas,ctx}=renderer;
+    //鼠标控制器
+    const mouseCtrl=new MouseControler(canvas);
+
+    //柱状图数据
+    const xData=['衬衫','毛衣','羽绒','礼服','铠甲'];
+    const sData=[11121,2425,6277,4253,7355];
+    const max=Math.max(...sData);
+    const charPd=100;
+
+    //圆圈
+    class Circle extends Object2D{
+        constructor(x=0,y=0,radius=3){
+            super();
+            this.boundType='circle';
+            this.pos=new Vector2(x,y);
+            this.radius=radius;
+            this.strokeStyle='#bb1a00';
+            this.fillStyle='#fff';
+        }
+        draw(){
+            ctx.save();
+            ctx.lineWidth=2;
+            ctx.strokeStyle=this.strokeStyle;
+            ctx.fillStyle=this.fillStyle;
+            ctx.beginPath();
+            ctx.arc(0,0,this.radius,0,Math.PI*2);
+            ctx.stroke();
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    //折线图
+    const broken=new Flex({
+        padding:{
+            top:charPd,
+            left:charPd,
+            bottom:charPd,
+            right:charPd,
+        }
+    });
+
+    //坐标图
+    const coord=new Coord({
+        xData:xData,
+        sData:sData,
+    });
+
+    //点集合
+    const vs=[];
+    //圆集合
+    const cs=[];
+    xData.forEach((ele,ind)=>{
+        vs[ind]=new Vector2();
+        const circle=new Circle();
+        circle.cls='circle';
+        circle.text=ele;
+        circle.data=sData[ind];
+        circle.pos=vs[ind];
+        cs.push(circle);
+        mouseCtrl.add(circle);
+
+        circle.addEventListener('mouseover',(event)=>{
+            tip.pos.copy(event.pos).add(new Vector2(10,20));
+            tip.text=circle.data;
+            tip.visible=true;
+            circle.radius+=3;
+            renderer.render();
+        });
+        circle.addEventListener('mouseout',(event)=>{
+            tip.visible=false;
+            circle.radius-=3;
+            renderer.render();
+        });
+    });
+    const line=new Poly(
+        vs,
+        new BasicMat({state:2,strokeStyle:'#666'})
+    );
+    line.id='line';
+    broken.items=[coord,line,...cs];
+    updateBrokenSize();
+    renderer.add(broken);
+
+    //提示文字
+    const tip=new TextHasBack();
+    tip.visible=false;
+    renderer.add(tip);
+
+    //渲染图形
+    renderer.render();
+
+    //自适应
+    window.addEventListener('resize',function(event){
+        renderer.updateSize();
+        updateBrokenSize();
+
+        renderer.render();
+    });
+
+    function updateBrokenSize(){
+        const {clientWidth,clientHeight}=renderer.rec;
+        broken.fw=clientWidth;
+        broken.fh=clientHeight;
+        const {width,height}=broken.cont;
+        coord.width=width;
+        coord.height=height;
+        coord.update();
+        const sp=width/cs.length;
+        broken.findByCls('circle').forEach((ele,ind)=>{
+            const a=sData[ind]/max;
+            const [x,y]=[sp/2+sp*ind,height-height*a];
+            //line.geo.vectors[ind].pos.set(x,y);
+            ele.pos.set(x,y);
+        });
+        mouseCtrl.update();
+    }
+</script>
+</body>
+</html>
