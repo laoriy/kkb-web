@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>饼图</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden
+        }
+
+        #canvas {
+            background: antiquewhite;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const [width, height] = [window.innerWidth, window.innerHeight];
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+
+        /*======== 一，声明必备数据 ==========*/
+        //系列标签
+        const seriesBabel = ['T恤', '夹克', '护甲背心', '迷彩服', '防弹衣'];
+        //系列数据
+        const seriesData = [11121, 2425, 6277, 4253, 7355];
+        //饼图的圆心位置
+        const pos = { x: width / 2, y: height / 2 };
+        //饼图绘图区半径
+        const radius = 180;
+        //颜色间距
+        const colorSpace = Math.floor(150 / seriesBabel.length);
+
+
+        /*======== 二，构建数据 ==========*/
+        /*------ 1.计算基本数据 -------*/
+        //系列数据总和
+        const babelSum = eval(seriesData.join('+'));
+        //元素数量
+        const itemNum = seriesBabel.length;
+        //系列扇形的起始角度和结束角度
+        const seriesAngle = [];
+        //系列扇形颜色
+        const seriesColor = [];
+        //系列扇形半径
+        const seriesRadius = [];
+
+
+        //遍历标签
+        seriesData.forEach((ele, ind) => {
+            //数据比例
+            const dataScalar = ele / babelSum;
+            //扇形角度
+            const angle = dataScalar * Math.PI * 2;
+            //扇形起始角度
+            let startAngle = ind === 0 ? 0 : seriesAngle[ind - 1][1];
+            //扇形结束角度
+            const endAngle = startAngle + angle;
+            //系列扇形的起始角度和结束角度
+            seriesAngle.push([startAngle, endAngle]);
+
+            //色域
+            const gamut = 80 + ind * colorSpace;
+            //扇形颜色
+            seriesColor.push(`rgba(255,${gamut},${gamut},1)`);
+            //系列扇形半径
+            const itemRadius = radius - ind * 10;
+            seriesRadius.push(itemRadius);
+        });
+
+
+        /*======== 三，基于数据绘图 ==========*/
+        /*------ 扇形  -------*/
+        class Sector {
+            constructor(radius = 0, startAngle = 0, endAngle = Math.PI * 2, color = '#000') {
+                /*扇形属性*/
+                //半径
+                this.radius = 0;
+                //起始弧度
+                this.startAngle = startAngle;
+                //结束弧度
+                this.endAngle = endAngle;
+                //颜色
+                this.color = color;
+                //位置
+                this.pos = { x: 0, y: 0 };
+                //数据
+                this.data = 0;
+
+                /*标签属性*/
+                //点位
+                this.v1 = { x: 0, y: 0 };
+                this.v2 = { x: 0, y: 0 };
+                this.v3 = { x: 0, y: 0 };
+                this.v4 = { x: 0, y: 0 };
+                //标签内容
+                this.text = '';
+                //文字的水平对齐方式
+                this.textAlign = 'left';
+
+                //半径的变化速度
+                this.vr = 0.3;
+                //半径的加速度
+                this.ar = 0.03;
+                //半径的弹性
+                this.bounce = -0.6;
+                //实际半径
+                this.basicR = radius;
+                //鼠标划上时，变大后的半径
+                this.bigR = null;
+                /*动画的状态
+                * 0 生长状态
+                * 1 扩展状态
+                * 2 收缩状态
+                * */
+                this.state = 0;
+            }
+            /*更新引导线的位置
+            * 更新标签的位置
+            * 更新扩展半径
+            * */
+            updateV() {
+                const { basicR, startAngle, endAngle, pos: { x, y } } = this;
+                //引线方向
+                const dir = startAngle + (endAngle - startAngle) / 2;
+                /*v1 的位置*/
+                //v1到圆心的距离
+                const len1 = basicR + 25;
+                this.v1 = {
+                    x: Math.cos(dir) * len1 + x,
+                    y: Math.sin(dir) * len1 + y
+                }
+                /*v2 的位置*/
+                //v1到圆心的距离
+                const len2 = basicR + 70;
+                this.v2 = {
+                    x: Math.cos(dir) * len2 + x,
+                    y: Math.sin(dir) * len2 + y
+                }
+                /*第二段引导线方向*/
+                let n = 1;
+                if (Math.cos(dir) < 0) {
+                    n = -1;
+                    this.textAlign = 'right';
+                }
+                /*v3 的位置*/
+                this.v3 = {
+                    x: this.v2.x + 20 * n,
+                    y: this.v2.y
+                }
+                /*v4 的位置*/
+                this.v4 = {
+                    x: this.v3.x + 10 * n,
+                    y: this.v2.y
+                }
+
+                //扩展半径
+                this.bigR = basicR + 20;
+            }
+            /*基于状态更新半径*/
+            updateR(diff) {
+                if (this.state === 0) {
+                    this.expand(diff, this.basicR);
+                } else if (this.state === 1) {
+                    this.expand(diff, this.bigR);
+                } else if (this.state === 2) {
+                    this.shrink(diff, this.basicR);
+                }
+            }
+            /*半径扩大动画*/
+            expand(diff, endR) {
+                const { ar, bounce } = this;
+                this.vr += ar;
+                this.radius += this.vr * diff;
+                if (this.radius > endR) {
+                    this.radius = endR;
+                    this.vr = this.vr * bounce;
+                }
+            }
+            /*半径收缩动画*/
+            shrink(diff, endR) {
+                const { ar, bounce } = this;
+                this.vr -= ar;
+                this.radius += this.vr * diff;
+                if (this.radius < endR) {
+                    this.radius = endR;
+                    this.vr = this.vr * bounce;
+                }
+            }
+
+            /*绘图*/
+            draw(ctx) {
+                const { pos: { x, y }, radius, startAngle, endAngle, color, v1, v2, v3, v4, text, textAlign } = this;
+                ctx.save();
+                /*绘制扇形*/
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.arc(x, y, radius, startAngle, endAngle);
+                ctx.fillStyle = color;
+                ctx.fill();
+                /*绘制引导线*/
+                ctx.beginPath();
+                ctx.moveTo(v1.x, v1.y);
+                ctx.lineTo(v2.x, v2.y);
+                ctx.lineTo(v3.x, v3.y);
+                ctx.stroke();
+                /*绘制标签文字*/
+                ctx.font = '14px Arial';
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = textAlign;
+                ctx.fillStyle = '#000';
+                ctx.fillText(text, v4.x, v4.y);
+                ctx.restore();
+            }
+        }
+
+        /*将扇形添加到系列集合中*/
+        const series = [];
+        seriesAngle.forEach((ele, ind) => {
+            /*const item=new Sector(seriesRadius[ind],ele[0],ele[1],seriesColor[ind]);
+            item.pos.copy(pos);
+            item.text=seriesBabel[ind];
+            item.id=ind;
+            series.push(item);*/
+            //实例化扇形
+            const item = new Sector(seriesRadius[ind], ele[0], ele[1], seriesColor[ind]);
+            item.pos = {
+                x: pos.x,
+                y: pos.y
+            };
+            item.text = seriesBabel[ind];
+            item.data = seriesData[ind];
+            item.updateV();
+            series.push(item);
+        });
+
+
+
+        /*======== 四，鼠标交互 ==========*/
+
+        /*------ 建立提示框 Tip -------*/
+        /*建立提示框 Tip
+        * 属性：
+        * text 文字内容
+        * pos 位置
+        * visible 可见性
+        * 方法：
+        * draw(ctx)
+        *
+        * 绘制背景：
+        * 设置填充色 'rgba(0,0,0,0.6)'
+        * 设置字体 '12px Arial'
+        * 获取文字宽度width： measureText(text).width
+        * 绘制填充矩形：fillRect(x,y,width,30)
+        *
+        * 绘制文字：
+        * 水平居中
+        * 垂直居中
+        * 填充色为白色
+        * 绘制文字 fillText(text,x+width/2,y+15);
+        *
+        * */
+
+        class Tip {
+            constructor(text = '') {
+                this.text = text;
+                this.pos = { x: 0, y: 0 };
+                this.visible = false;
+
+                //终点
+                this.end = { x: 0, y: 0 }
+                //移动距离和总距离的比值 rate
+                this.rate = 0.1;
+                /*移动状态
+                * 0 不移动
+                * 1 开始移动
+                * */
+                this.state = 0;
+            }
+            updatePos() {
+                if (!this.visible) { return }
+                const { pos, end, rate } = this;
+                if (this.state) {
+                    const subX = end.x - pos.x;
+                    const subY = end.y - pos.y;
+                    const len = Math.sqrt(subX * subX + subY * subY);
+                    if (len < 1) {
+                        this.state = 0;
+                    } else {
+                        this.pos = {
+                            x: subX * rate + pos.x,
+                            y: subY * rate + pos.y,
+                        }
+                    }
+                }
+            }
+            draw(ctx) {
+                const { pos: { x, y }, text, visible } = this;
+                if (!visible) { return }
+                ctx.save();
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.font = '14px Arial';
+                const width = ctx.measureText(text).width + 36;
+                ctx.fillRect(x, y, width, 30);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(text, x + width / 2, y + 15);
+                ctx.restore();
+            }
+        }
+        //实例化提示框
+        const tip = new Tip();
+        tip.pos = {
+            x: pos.x,
+            y: pos.y
+        }
+
+        //监听鼠标移动事件
+        canvas.addEventListener('mousemove', mousemoveFn);
+        function mousemoveFn(event) {
+            //鼠标位置
+            const mousePos = getMousePos(event);
+            //当前被鼠标划上的扇形
+            let hoveredItem = null;
+
+            //遍历系列
+            for (let i = 0; i < series.length; i++) {
+                //判断鼠标是否在矩形中
+                //如果在，就显示提示文字，设置文字位置和内容
+                //如果不在，就隐藏提示文字
+                if (containPoint(series[i], mousePos)) {
+                    series[i].state = 1;
+                    hoveredItem = series[i];
+                } else if (series[i].state === 1) {
+                    series[i].state = 2;
+                }
+            }
+            if (hoveredItem) {
+                tip.visible = true;
+                tip.end = {
+                    x: mousePos.x + 10,
+                    y: mousePos.y + 20
+                }
+                tip.state = 1;
+                tip.text = hoveredItem.data;
+            } else {
+                tip.visible = false;
+            }
+
+
+            //按需渲染
+            //render();
+        }
+
+        //计时器
+        let time = new Date();
+        //渲染
+        render();
+        //渲染方法
+        function render() {
+            //获取时间差
+            const now = new Date();
+            const diff = now - time;
+            time = now;
+
+            //清理画布
+            ctx.clearRect(0, 0, width, height);
+            //渲染系列图形
+            series.forEach((item) => {
+                //更新半径
+                item.updateR(diff);
+                //绘制系列图像
+                item.draw(ctx);
+            });
+
+            //提示框
+            tip.updatePos();
+            tip.draw(ctx);
+
+            //连线渲染
+            requestAnimationFrame(render);
+        }
+
+        //判断点是否在图形中
+        function containPoint(obj, mousePos) {
+            const { pos, radius, startAngle, endAngle } = obj;
+            const { x, y } = mousePos;
+            //鼠标位减图形位
+            const [subX, subY] = [x - pos.x, y - pos.y];
+            //获取鼠标到圆心的距离
+            const len = Math.sqrt(subX * subX + subY * subY);
+            //判断鼠标到圆心的距离是否小于半径
+            const b1 = len < radius;
+            //获取鼠标位减图形位的方向 dir
+            let dir = Math.atan2(subY, subX);
+            if (dir < 0) { dir += Math.PI * 2 }
+            //判断鼠标向量的方向是否在扇形的夹角之间
+            const b2 = dir > startAngle && dir < endAngle;
+            return b1 && b2;
+        }
+        //获取鼠标位置
+        function getMousePos(event) {
+            //获取鼠标位置
+            const { clientX, clientY } = event;
+            //获取canvas 边界位置
+            const { top, left } = canvas.getBoundingClientRect();
+            //计算鼠标在canvas 中的位置
+            const x = clientX - left;
+            const y = clientY - top;
+            return { x, y };
+        }
+        //获取被鼠标划上的元素
+        function hoverItem(mousePos) {
+            let obj = null;
+            //遍历系列
+            for (let i = 0; i < series.length; i++) {
+                if (containPoint(series[i], mousePos)) {
+                    obj = series[i];
+                    break;
+                }
+            }
+            return obj;
+        }
+
+    </script>
+</body>
+
+</html>
