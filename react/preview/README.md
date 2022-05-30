@@ -157,34 +157,62 @@ const jsx = (
 - V16.4 之后的⽣命周期
   ![image](images/new-life.png)
 
-    V17 可能会废弃的三个⽣命周期函数⽤`getDerivedStateFromProps`替代，⽬前使⽤的话加上 UNSAFE_：
+  V17 可能会废弃的三个⽣命周期函数⽤`getDerivedStateFromProps`替代，⽬前使⽤的话加上 UNSAFE\_：
 
-    - componentWillMount
-    - componentWillReceiveProps
-    - componentWillUpdate
+  - componentWillMount
+  - componentWillReceiveProps
+  - componentWillUpdate
 
-    引⼊两个新的⽣命周期函数：
+  引⼊两个新的⽣命周期函数：
 
-    - static getDerivedStateFromProps
-    - getSnapshotBeforeUpdate
+  - static getDerivedStateFromProps
+  - getSnapshotBeforeUpdate
     如果不想⼿动给将要废弃的⽣命周期添加 UNSAFE\_ 前缀，可以⽤下⾯的命令。
 
         ```
         npx react-codemod rename-unsafe-lifecycles <path>
         ```
 
-    新引⼊的两个⽣命周期函数
-    - getDerivedStateFromProps
-        ```
-        static getDerivedStateFromProps(props, state)
-        ```
-        getDerivedStateFromProps 会在调⽤ render ⽅法之前调⽤，并且在初始挂载及后续更新时都会被调⽤。它应返回⼀个对象来更新 state，如果返回 null 则不更新任何内容。
-        
-        ***请注意**，不管原因是什么，都会在每次渲染前触发此⽅法。这与`UNSAFE_componentWillReceiveProps` 形成对⽐，后者仅在⽗组件重新渲染时触发，⽽不是在内部调⽤ setState 时*
-    - getSnapshotBeforeUpdate
-        ```
-        getSnapshotBeforeUpdate(prevProps, prevState)
-        ```
-        在render之后，在componentDidUpdate之前。
-        `getSnapshotBeforeUpdate()` 在最近⼀次渲染输出（提交到 DOM 节点）之前调⽤。它使得组件能
-        在发⽣更改之前从 DOM 中捕获⼀些信息（例如，滚动位置）。此⽣命周期的任何返回值将作为参数传递给 componentDidUpdate(prevProps, prevState, snapshot) 。  
+  新引⼊的两个⽣命周期函数
+
+  - getDerivedStateFromProps
+    ```
+    static getDerivedStateFromProps(props, state)
+    ```
+    getDerivedStateFromProps 会在调⽤ render ⽅法之前调⽤，并且在初始挂载及后续更新时都会被调⽤。它应返回⼀个对象来更新 state，如果返回 null 则不更新任何内容。
+    **\*请注意**，不管原因是什么，都会在每次渲染前触发此⽅法。这与`UNSAFE_componentWillReceiveProps` 形成对⽐，后者仅在⽗组件重新渲染时触发，⽽不是在内部调⽤ setState 时\*
+  - getSnapshotBeforeUpdate
+    ```
+    getSnapshotBeforeUpdate(prevProps, prevState)
+    ```
+    在 render 之后，在 componentDidUpdate 之前。
+    `getSnapshotBeforeUpdate()` 在最近⼀次渲染输出（提交到 DOM 节点）之前调⽤。它使得组件能
+    在发⽣更改之前从 DOM 中捕获⼀些信息（例如，滚动位置）。此⽣命周期的任何返回值将作为参数传递给 componentDidUpdate(prevProps, prevState, snapshot) 。
+
+# Redux
+
+### 你可能不需要 redux
+
+Redux 是负责组织 state 的⼯具，但你也要考虑它是否适合你的情况。不要因为有⼈告诉你要⽤ Redux 就去⽤，花点时间好好想想使⽤了 Redux 会带来的好处或坏处。在下⾯的场景中，引⼊ Redux 是⽐较明智的：
+
+- 你有着相当⼤量的、随时间变化的数据；
+- 你的 state 需要有⼀个单⼀可靠数据来源；
+- 你觉得把所有 state 放在最顶层组件中已经⽆法满⾜需要了。
+- 某个组件的状态需要共享。
+
+### redux
+
+redux 是 JavaScript 应⽤的状态容器，提供可预测化的状态管理。它保证程序⾏为⼀致性且易于测试。
+![image](images/redux.png)
+
+### 检查点
+1. createStore 创建store
+2. reducer 初始化、修改状态函数
+3. getState 获取状态值
+4. dispatch 提交更新
+5. subscribe 变更订阅
+
+### 使⽤react-redux
+react-redux提供了两个api:
+1. Provider 为后代组件提供store
+2. connect 为组件提供数据和变更⽅法
