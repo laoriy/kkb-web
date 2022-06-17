@@ -3,6 +3,7 @@ import FormPage from "./pages/FormPage";
 import FormPage2 from "./pages/FormPage2";
 import FormCustom from "./pages/FormCustom";
 import DialogPage from "./pages/DialogPage";
+import ContextPage from "./pages/ContextPage";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
       <FormCustom />
       {/* 弹框组件 */}
       <DialogPage />
+      {/* Context */}
+      <ContextPage />
     </div>
   );
 }
