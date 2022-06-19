@@ -84,6 +84,54 @@
         // console.log(`买5kg${fruits[0].name}需要￥${fruits[0].totalPrice(5)}`);
         return fruits
     })
+
+    // // 通过属性查询
+    // Fruit.findOne({ where: { name: "⾹蕉" } }).then(fruit => {
+    //     // fruit是⾸个匹配项，若没有则为null
+    //     console.log(fruit.get());
+    // });
+
+    // // 指定查询字段
+    // Fruit.findOne({ attributes: ['name'] }).then(fruit => {
+    //     // fruit是⾸个匹配项，若没有则为null
+    //     console.log(fruit.get());
+    // });
+    // 获取数据和总条数
+    // Fruit.findAndCountAll().then(result => {
+    //     console.log(result.count);
+    //     console.log(result.rows.length);
+    // });
+
+    // 查询操作符
+    Fruit.findAll({
+        // where: { price: { [Op.lt]:4 }, stock: { [Op.gte]: 100 } }
+        where: { price: { [Op.lt]: 4, [Op.gt]: 2 } }
+    }).then(fruits => {
+        console.log(fruits.length);
+    });
+    // 或语句
+    Fruit.findAll({
+        // where: { [Op.or]:[{price: { [Op.lt]:4 }}, {stock: { [Op.gte]: 100 }}] }
+        where: { price: { [Op.or]: [{ [Op.gt]: 3 }, { [Op.lt]: 2 }] } }
+    }).then(fruits => {
+        console.log(fruits[0].get());
+    });
+    // 分⻚
+    Fruit.findAll({
+        offset: 0,
+        limit: 2,
+    })
+    // 排序
+    Fruit.findAll({
+        order: [['price', 'DESC']],
+    })
+    // 聚合
+    Fruit.max("price").then(max => {
+        console.log("max", max);
+    });
+    Fruit.sum("price").then(sum => {
+        console.log("sum", sum);
+    });
     // console.log('findAll', ret[0].amount, JSON.stringify(ret))
 
     // console.log(JSON.stringify(ret));
