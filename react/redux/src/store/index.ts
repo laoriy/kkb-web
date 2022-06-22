@@ -1,17 +1,6 @@
-import { createStore, Action } from "redux";
-
-//定义state初始化和修改规则,reducer是一个纯函数
-function counterReducer(state = 0, action: Action) {
-  switch (action.type) {
-    case "ADD":
-      return state + 1;
-    case "MINUS":
-      return state - 1;
-    default:
-      return state;
-  }
-}
-const store = createStore(counterReducer);
+import store from "./redux";
+// import store from "./redux-toolkit";
+// as Store<number, Action<any>>
 export interface RootState {
   num: number;
 }
