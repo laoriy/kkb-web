@@ -30,12 +30,12 @@ const ReduxPage = () => {
   return (
     <div>
       <h3>ReduxPage</h3>
-      <p>{store.getState()}</p>
+      {/* <p>{store.getState()}</p> */}
       <button onClick={() => store.dispatch({ type: "ADD" })}>add</button>
       <button onClick={() => store.dispatch({ type: "MINUS" })}>minus</button>
       <button onClick={asyncAdd}>asyncAdd</button>
       <h3>ReduxTooltip</h3>
-      {/* <p>{store.getState().countReducer}</p> */}
+      <p>{store.getState().countReducer}</p>
       <button onClick={() => store.dispatch(countAdd())}>add</button>
       <button onClick={() => store.dispatch(countMinus())}>minus</button>
       <button onClick={asyncAdd2}>asyncAdd2</button>
