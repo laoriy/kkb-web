@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ReactReduxPage from "./pages/ReactReduxPage";
-
 function App() {
   const [color, setColor] = useState("red");
   return (

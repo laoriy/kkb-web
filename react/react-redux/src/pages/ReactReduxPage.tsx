@@ -1,8 +1,9 @@
 import { useCallback } from "react";
-import { connect, ConnectedProps, useDispatch, useSelector } from "react-redux";
+import { ConnectedProps, useDispatch, useSelector } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { RootState } from "../store";
 import { countAdd, countMinus } from "../store/slices/count";
+import { connect } from "../lReactRedux";
 interface BaseProps {
   color: string;
 }
@@ -40,6 +41,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     minus: () => ({ type: "MINUS" }),
   };
   res = bindActionCreators(res, dispatch);
+
   return {
     ...res,
   };
@@ -52,11 +54,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
  * 如果省略mapDispatchToProps这个参数，则dispatch会注入到props中。
  */
 const connector = connect(mapState, mapDispatchToProps);
+
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 interface Props extends PropsFromRedux, BaseProps {}
 const ReactReduxPage = (props: Props) => {
-  console.log(props);
+  console.log(props, "props");
 
   const { add, num, minus, color } = props;
 
