@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { ConnectedProps, useDispatch, useSelector } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { Dispatch } from "redux";
 import { RootState } from "../store";
 import { countAdd, countMinus } from "../store/slices/count";
-import { connect } from "../lReactRedux";
+import { connect, bindActionCreators } from "../lReactRedux";
 interface BaseProps {
   color: string;
 }
@@ -35,21 +35,21 @@ const mapState = (state: RootState, ownProps: BaseProps) => {
 /**
  * 上面手动加dispatch也可以通过bindActionCreators进行处理
  */
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  let res = {
-    add: () => ({ type: "ADD" }),
-    minus: () => ({ type: "MINUS" }),
-  };
-  res = bindActionCreators(res, dispatch);
+// const mapDispatchToProps = (dispatch: Dispatch) => {
+//   let res = {
+//     add: () => ({ type: "ADD" }),
+//     minus: () => ({ type: "MINUS" }),
+//   };
+//   res = bindActionCreators(res, dispatch);
 
-  return {
-    ...res,
-  };
-};
-// const mapDispatchToProps = {
-//   add: () => ({ type: "ADD" }),
-//   minus: () => ({ type: "MINUS" }),
+//   return {
+//     ...res,
+//   };
 // };
+const mapDispatchToProps = {
+  add: () => ({ type: "ADD" }),
+  minus: () => ({ type: "MINUS" }),
+};
 /**
  * 如果省略mapDispatchToProps这个参数，则dispatch会注入到props中。
  */
@@ -59,8 +59,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 interface Props extends PropsFromRedux, BaseProps {}
 const ReactReduxPage = (props: Props) => {
-  console.log(props, "props");
-
   const { add, num, minus, color } = props;
 
   return (

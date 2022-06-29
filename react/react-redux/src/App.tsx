@@ -7,7 +7,7 @@ function App() {
       Edit <code>src/App.tsx</code> and save to reload.
       <ReactReduxPage color={color} />
       <button onClick={() => setColor(color === "red" ? "green" : "red")}>
-        change color{" "}
+        change color
       </button>
     </div>
   );
