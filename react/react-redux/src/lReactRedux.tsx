@@ -8,15 +8,15 @@ type ProviderProps = {
 };
 
 export const bindActionCreators = <T extends Record<string, any>>(
-  actions: T,
+  creators: T,
   dispatch: any
 ) => {
-  const keys = Object.keys(actions);
+  const keys = Object.keys(creators);
   let res: { [key in keyof T]: T[keyof T] } = {} as {
     [key in keyof T]: T[keyof T];
   };
   keys.forEach((key: keyof T) => {
-    res[key] = (() => dispatch(actions[key]())) as T[keyof T];
+    res[key] = (() => dispatch(creators[key]())) as T[keyof T];
   });
   return res;
 };
