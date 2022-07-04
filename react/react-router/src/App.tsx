@@ -1,9 +1,9 @@
 import React from "react";
-
+import { RouterPage } from "./pages/RouterPage";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">react-router app</header>
+      <RouterPage />
     </div>
   );
 }
