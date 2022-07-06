@@ -1,4 +1,6 @@
+import { useAppSelector } from "../store/hooks";
 import { useLocation, Navigate } from "react-router-dom";
+import { getIsLogin } from "../store/modules/user";
 
 type BaseProps = {
   component: JSX.Element;
@@ -9,7 +11,7 @@ export function PrivateRoute(props: Props) {
   const { component } = props;
   const location = useLocation();
 
-  const isLogin = false;
+  const isLogin = useAppSelector(getIsLogin);
   if (isLogin) {
     // 已登录
     return component;
