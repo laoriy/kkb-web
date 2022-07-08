@@ -6,5 +6,6 @@ const store = configureStore({
     count: countReducer,
   },
 });
+
 export default store;
 

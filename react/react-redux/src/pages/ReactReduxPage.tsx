@@ -58,28 +58,9 @@ const connector = connect(mapState, mapDispatchToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 interface Props extends PropsFromRedux, BaseProps {}
-const ReactReduxPage = (props: Props) => {
-  const { add, num, minus, color } = props;
+// const ReactReduxPage = (props: Props) => {
+//   const { add, num, minus, color } = props;
 
-  return (
-    <div style={{ color }}>
-      <h3>ReactReduxPage</h3>
-      <p>{num}</p>
-      <button onClick={add}>add</button>
-      <button onClick={minus}>minus</button>
-    </div>
-  );
-};
-
-export default connector(ReactReduxPage);
-
-// const ReactReduxPage = (props: BaseProps) => {
-//   const dispatch = useDispatch();
-//   const num: any = useSelector((state: any) => state.count);
-//   console.log(num);
-//   const add = useCallback(() => dispatch(countAdd()), []);
-//   const minus = useCallback(() => dispatch(countMinus()), []);
-//   const { color } = props;
 //   return (
 //     <div style={{ color }}>
 //       <h3>ReactReduxPage</h3>
@@ -89,4 +70,38 @@ export default connector(ReactReduxPage);
 //     </div>
 //   );
 // };
-// export default ReactReduxPage;
+
+// export default connector(ReactReduxPage);
+
+const ReactReduxPage = (props: BaseProps) => {
+  const dispatch = useDispatch();
+
+  const num: any = useSelector((state: any) => state.count);
+  const add = useCallback(() => dispatch(countAdd()), []);
+  const minus = useCallback(() => dispatch(countMinus()), []);
+  const exampleThunkFunction = (dispatch: any, getState: any) => {
+    const stateBefore = getState();
+    console.log(`Counter before: ${stateBefore.count}`);
+    setTimeout(() => {
+      dispatch(countAdd());
+      const stateAfter = getState();
+      console.log(`Counter after: ${stateAfter.count}`);
+    }, 1000);
+  };
+  const logAdd = () => {
+    //@ts-ignore
+    dispatch(exampleThunkFunction);
+  };
+
+  const { color } = props;
+  return (
+    <div style={{ color }}>
+      <h3>ReactReduxPage</h3>
+      <p>{num}</p>
+      <button onClick={add}>add</button>
+      <button onClick={logAdd}>add with login</button>
+      <button onClick={minus}>minus</button>
+    </div>
+  );
+};
+export default ReactReduxPage;
