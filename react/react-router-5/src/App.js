@@ -27,7 +27,7 @@ function App() {
                 <Link to="/user">用户中心</Link>
                 <Link to="/children">children</Link>
                 <Link to="/render">render</Link>
-                {/* <Link to="/search/123">search</Link> */}
+                <Link to="/search/123">search</Link>
                 {/* <Link to="/modalswicth">Modal Switch</Link> */}
                 {/* <Link to="/login">登录</Link> */}
 
@@ -36,7 +36,7 @@ function App() {
                 <Route exact path="/" component={HomePage} />
                 <Route path="/user" component={UserPage} />
                 <Route path="/children" children={() => <div>children</div>} />
-                {/* <Route path="/search/:id" component={SearchComponent} /> */}
+                <Route path="/search/:id" component={SearchComponent} />
                 {/* <Route path="/search/:id" children={<SearchComponent />} /> */}
 
                 <Route path="/render" render={() => <div>render</div>} />
@@ -58,13 +58,14 @@ function DetailComonent(props) {
 }
 
 function SearchComponent(props) {
-    console.log("use", useParams(), useLocation(), useHistory()); //sy-log
-    const { id } = useParams(); //props.match.params;
+    // console.log("use", useParams(), useLocation(), useHistory()); //sy-log
+    // const { id } = useParams(); //props.match.params;
+    const { id } = props.match.params; //props.match.params;
     return (
         <div>
             <div>SearchComponent-{id}</div>
-            <Link to="/search/123/detail">详情</Link>
-            <Route path="/search/:id/detail" component={DetailComonent} />
+            {/* <Link to="/search/123/detail">详情</Link>
+            <Route path="/search/:id/detail" component={DetailComonent} /> */}
         </div>
     );
 }
