@@ -1,9 +1,9 @@
 import React from "react";
-import { Switch, useParams, useLocation, useHistory } from "react-router-dom";
+// import { Switch, useParams, useLocation, useHistory } from "react-router-dom";
 import BrowserRouter from "./k-react-router-dom/BrowserRouter";
 import Route from "./k-react-router-dom/Route";
 import Link from "./k-react-router-dom/Link";
-// import Switch from "./k-react-router-dom/Switch";
+import Switch from "./k-react-router-dom/Switch";
 // import { useParams, useLocation, useHistory } from "./k-react-router-dom/hooks";
 
 import HomePage from "./pages/HomePage";
@@ -32,20 +32,20 @@ function App() {
                 {/* <Link to="/login">登录</Link> */}
 
                 {/* <Switch location={{pathname: "/user"}}> */}
-                {/* <Switch> */}
-                <Route exact path="/" component={HomePage} />
-                <Route path="/user" component={UserPage} />
-                <Route path="/children" children={() => <div>children</div>} />
-                <Route path="/search/:id" component={SearchComponent} />
-                {/* <Route path="/search/:id" children={<SearchComponent />} /> */}
+                <Switch>
+                    <Route exact path="/" component={HomePage} />
+                    <Route path="/user" component={UserPage} />
+                    <Route path="/children" children={() => <div>children</div>} />
+                    <Route path="/search/:id" component={SearchComponent} />
+                    {/* <Route path="/search/:id" children={<SearchComponent />} /> */}
 
-                <Route path="/render" render={() => <div>render</div>} />
-                {/* <Route path="/modalswicth" component={ModalSwitch} /> */}
-                {/* <Route path="/login" component={LoginPage} /> */}
-                {/* <PrivateRoute path="/user" component={UserPage} /> */}
-                {/* 如果Route没有path参数，将始终被匹配 */}
-                {/* <Route render={() => <div>404</div>} /> */}
-                {/* </Switch> */}
+                    <Route path="/render" render={() => <div>render</div>} />
+                    {/* <Route path="/modalswicth" component={ModalSwitch} /> */}
+                    {/* <Route path="/login" component={LoginPage} /> */}
+                    {/* <PrivateRoute path="/user" component={UserPage} /> */}
+                    {/* 如果Route没有path参数，将始终被匹配 */}
+                    <Route render={() => <div>404</div>} />
+                </Switch>
             </BrowserRouter>
         </div>
     );
@@ -53,8 +53,8 @@ function App() {
 
 export default App;
 
-function DetailComonent(props) {
-    return <div>DetailComonent</div>;
+function DetailComponent(props) {
+    return <div>DetailComponent</div>;
 }
 
 function SearchComponent(props) {
@@ -64,8 +64,8 @@ function SearchComponent(props) {
     return (
         <div>
             <div>SearchComponent-{id}</div>
-            {/* <Link to="/search/123/detail">详情</Link>
-            <Route path="/search/:id/detail" component={DetailComonent} /> */}
+            <Link to="/search/123/detail">详情</Link>
+            <Route path="/search/:id/detail" component={DetailComponent} />
         </div>
     );
 }
