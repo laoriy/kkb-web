@@ -29,20 +29,20 @@ function App() {
                 <Link to="/render">render</Link>
                 <Link to="/search/123">search</Link>
                 {/* <Link to="/modalswicth">Modal Switch</Link> */}
-                {/* <Link to="/login">登录</Link> */}
+                <Link to="/login">登录</Link>
 
-                {/* <Switch location={{pathname: "/user"}}> */}
+                {/* <Switch location={{ pathname: "/user" }}> */}
                 <Switch>
                     <Route exact path="/" component={HomePage} />
-                    <Route path="/user" component={UserPage} />
+                    {/* <Route path="/user" component={UserPage} /> */}
                     <Route path="/children" children={() => <div>children</div>} />
                     <Route path="/search/:id" component={SearchComponent} />
                     {/* <Route path="/search/:id" children={<SearchComponent />} /> */}
 
                     <Route path="/render" render={() => <div>render</div>} />
                     {/* <Route path="/modalswicth" component={ModalSwitch} /> */}
-                    {/* <Route path="/login" component={LoginPage} /> */}
-                    {/* <PrivateRoute path="/user" component={UserPage} /> */}
+                    <Route path="/login" component={LoginPage} />
+                    <PrivateRoute path="/user" component={UserPage} />
                     {/* 如果Route没有path参数，将始终被匹配 */}
                     <Route render={() => <div>404</div>} />
                 </Switch>
