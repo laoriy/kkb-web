@@ -1,12 +1,10 @@
-import React, {Component} from "react";
-import BasicLayout from "../../layout/BasicLayout";
+import React from "react";
+import BottomNav from "../../components/BottomNav";
 
-export default class HomePage extends Component {
-  render() {
-    return (
-      <BasicLayout title="首页">
-        <h3>HomePage</h3>
-      </BasicLayout>
-    );
-  }
+
+export default function HomePage() {
+    return <div>HomePage
+
+        <BottomNav></BottomNav>
+    </div>
 }
