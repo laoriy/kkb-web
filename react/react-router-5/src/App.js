@@ -4,13 +4,12 @@ import BrowserRouter from "./k-react-router-dom/BrowserRouter";
 import Route from "./k-react-router-dom/Route";
 import Link from "./k-react-router-dom/Link";
 import Switch from "./k-react-router-dom/Switch";
-// import { useParams, useLocation, useHistory } from "./k-react-router-dom/hooks";
+import { useParams, useLocation, useHistory } from "./k-react-router-dom/hooks";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
 import LoginPage from "./pages/LoginPage";
 import PrivateRoute from "./pages/PrivateRoute";
-// import ModalSwitch from "./pages/ModalSwitch";
 
 // 课下写一下404的补录视频
 // 掌握React.Children
@@ -58,9 +57,9 @@ function DetailComponent(props) {
 }
 
 function SearchComponent(props) {
-    // console.log("use", useParams(), useLocation(), useHistory()); //sy-log
-    // const { id } = useParams(); //props.match.params;
-    const { id } = props.match.params; //props.match.params;
+    console.log("use", useParams(), useLocation(), useHistory()); //sy-log
+    const { id } = useParams(); //props.match.params;
+    // const { id } = props.match.params; //props.match.params;
     return (
         <div>
             <div>SearchComponent-{id}</div>
