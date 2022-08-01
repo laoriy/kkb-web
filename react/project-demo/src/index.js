@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import "./static/js/flexible";
+import "./static/style/iconfont/iconfont.css";
 
 ReactDOM.render(
     <App />,
