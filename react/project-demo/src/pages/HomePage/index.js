@@ -1,10 +1,10 @@
 import React from "react";
-import BottomNav from "../../components/BottomNav";
+import BasicLayout from "../../layout/BasicLayout";
 
 
 export default function HomePage() {
-    return <div>HomePage
-
-        <BottomNav></BottomNav>
-    </div>
+    return <BasicLayout title="首页">
+        <div>HomePage
+        </div>
+    </BasicLayout>
 }
