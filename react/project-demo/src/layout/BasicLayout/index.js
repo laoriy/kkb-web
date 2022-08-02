@@ -14,7 +14,7 @@ export default function BasicLayout(props) {
         document.getElementById("shortIcon").href = shortIcon;
     }, [title, shortIcon])
 
-
+    
     return <div className={classnames("basicLayout")}>
         {/* <TopBar title={title} /> */}
         <article className='article'>{props.children}</article>

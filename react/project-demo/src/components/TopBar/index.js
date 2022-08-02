@@ -5,7 +5,6 @@ import "./index.scss";
 
 export default function TopBar(props) {
     const history = useHistory();
-    console.log("routes", props); //sy-log
     const { title } = props;
     return (
         <div className="topBar">
