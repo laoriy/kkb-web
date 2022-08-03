@@ -3,18 +3,20 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import BasicLayout from "../../layout/BasicLayout";
+import { loginAction } from "../../action/login";
+
 export default connect(({ user }) => ({ user }), {
     // login: userInfo => ({ type: "loginSaga", payload: userInfo })
 
-    login: userInfo => ({ type: "LOGIN_SUCCESS", payload: userInfo })
-    // login: userInfo => dispatch => {
-    //     loginAction(dispatch, userInfo);
-    //     dispatch({ type: "LOGIN_REQUEST" }); //展示loading
-    //     // 去login请求
-    //     setTimeout(() => {
-    //         dispatch({ type: "LOGIN_SUCCESS", payload: userInfo });
-    //     }, 1000);
-    // }
+    // login: userInfo => ({ type: "LOGIN_SUCCESS", payload: userInfo })
+    login: userInfo => dispatch => {
+        loginAction(dispatch, userInfo);
+        // dispatch({ type: "LOGIN_REQUEST" }); //展示loading
+        // // 去login请求
+        // setTimeout(() => {
+        //     dispatch({ type: "LOGIN_SUCCESS", payload: userInfo });
+        // }, 1000);
+    }
 })(
     function LoginPage(props) {
         const [name, setName] = useState('')
