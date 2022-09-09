@@ -21,7 +21,7 @@ export default defineConfig({
     },
     {
         name: 'about',
-        path: '/about',
+        path: '/about/:id',
         component: './about',
     },
     {
