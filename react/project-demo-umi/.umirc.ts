@@ -20,9 +20,13 @@ export default defineConfig({
       component: './Home',
     },
     {
-        name: 'about',
-        path: '/about/:id',
-        component: './about',
+      name: 'about',
+      path: '/about',
+      wrappers: ['./about/wrapper'],
+      routes: [
+        { component: './about', path: '' },
+        { component: './about/detail', path: 'detail' },
+      ],
     },
     {
       name: '权限演示',
@@ -30,11 +34,10 @@ export default defineConfig({
       component: './Access',
     },
     {
-        name: ' CRUD 示例',
-        path: '/table',
-        component: './Table',
+      name: ' CRUD 示例',
+      path: '/table',
+      component: './Table',
     },
   ],
   npmClient: 'npm',
 });
-
