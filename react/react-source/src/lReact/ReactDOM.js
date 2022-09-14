@@ -12,11 +12,27 @@ function reconcilerChildren(children, node) {
     }
 }
 
+function updateFunctionComponent(vnode) {
+    const { type, props } = vnode
+    const vvnode = type(props)
+    const node = createNode(vvnode)
+    return node
+}
+function updateClassComponent(vnode) {
+    const { type, props } = vnode
+    const cmmp = new type(props)
+    const vvnode = cmmp.render()
+    const node = createNode(vvnode)
+    return node
+}
+
 function createNode(vnode) {
     const { type, props } = vnode
     let node
 
-    if (type === 'TEXT') {
+    if (typeof type === 'function') {
+        node = type.isReactComponent ? updateClassComponent(vnode) : updateFunctionComponent(vnode)
+    } else if (type === 'TEXT') {
         node = document.createTextNode('')
     } else {
         node = document.createElement(type)
