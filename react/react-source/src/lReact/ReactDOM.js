@@ -1,7 +1,14 @@
 // 更新节点属性，如className,nodeValue等
 function updateNode(node, nextVal) {
     Object.keys(nextVal).filter(key => key !== 'children').forEach(key => {
-        node[key] = nextVal[key]
+        if (key.slice(0, 2) === 'on') {
+            // 以on 开头就是事件（源码复杂一些）
+            let eventName = key.slice(2).toLowerCase()
+            node.addEventListener(eventName, nextVal[key])
+        } else {
+            node[key] = nextVal[key]
+        }
+
     })
 }
 function reconcilerChildren(children, node) {
@@ -34,8 +41,10 @@ function createNode(vnode) {
         node = type.isReactComponent ? updateClassComponent(vnode) : updateFunctionComponent(vnode)
     } else if (type === 'TEXT') {
         node = document.createTextNode('')
-    } else {
+    } else if (type) {
         node = document.createElement(type)
+    } else {
+        node = document.createDocumentFragment()
     }
     updateNode(node, props)
     reconcilerChildren(props.children, node)
@@ -44,6 +53,7 @@ function createNode(vnode) {
 
 function render(vnode, container) {
     console.log('vnode', vnode);
+
     // vnode --> node
     const node = createNode(vnode)
     // 把node更新到container

@@ -15,8 +15,10 @@ function createTextNode(text) {
  * @param {*} children 
  */
 function createElement(type, props, ...children) {
-    delete props.__self
-    delete props.__source
+    if(props){
+        delete props.__self
+        delete props.__source
+    }
     return {
         type,
         props: {

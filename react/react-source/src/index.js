@@ -7,7 +7,9 @@ import { Component } from './lReact/Component';
 
 
 function FunctionComponent({ name }) {
-    return <div className="border function">this is FunctionComponent,hello {name}</div>
+    return <div className="border function">this is FunctionComponent,hello {name}
+        <button onClick={() => console.log('123')}>click</button>
+    </div>
 }
 
 class ClassComponent extends Component {
@@ -24,6 +26,10 @@ const jsx = <div className="border">
     </div>
     <FunctionComponent name="function" />
     <ClassComponent name="class" />
+    <>
+        <span>123</span>
+        <span>456</span>
+    </>
 </div>
 
 
@@ -39,4 +45,5 @@ ReactDOM.render(jsx, document.getElementById("root"));
  * 文本类型、html标签节点
  * class component
  * function component
+ * fragment
  */
