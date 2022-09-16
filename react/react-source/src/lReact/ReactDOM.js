@@ -12,10 +12,17 @@ function updateNode(node, nextVal) {
     })
 }
 function reconcilerChildren(children, node) {
-
     for (let i = 0; i < children.length; i++) {
+        const child = children[i]
         // 遍历，创建元素
-        render(children[i], node)
+        // 判断children[i]类型。
+        if (Array.isArray(child)) {
+            for (let j = 0; j < child.length; j++) {
+                render(child[j], node)
+            }
+        } else {
+            render(children[i], node)
+        }
     }
 }
 

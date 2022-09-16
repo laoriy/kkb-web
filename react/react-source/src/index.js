@@ -30,6 +30,13 @@ const jsx = <div className="border">
         <span>123</span>
         <span>456</span>
     </>
+
+   { [1,2,3].map(item=>{
+        return (<div className="border" key={item}>
+            <p>{item}</p>
+            <p>item</p>
+        </div>)
+    })}
 </div>
 
 
@@ -47,3 +54,6 @@ ReactDOM.render(jsx, document.getElementById("root"));
  * function component
  * fragment
  */
+
+// jsx=>createElement(生成element，就是我们需要的vnode) => render(vnode--> node,再把node渲染到container)
+// vnode 生成node的流程注意下区分，不同的节点处理不同
