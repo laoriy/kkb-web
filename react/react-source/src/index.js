@@ -1,9 +1,9 @@
-import React,{Component} from "react";
-import ReactDOM from "react-dom";
-// import React from './lReact'
-// import ReactDOM from './lReact/ReactDOM'
+// import React,{Component} from "react";
+// import ReactDOM from "react-dom";
+import React from './lReact'
+import ReactDOM from './lReact/ReactDOM'
 import "./index.css";
-// import { Component } from './lReact/Component';
+import { Component } from './lReact/Component';
 
 
 function FunctionComponent({ name }) {
@@ -30,19 +30,19 @@ const jsx = <div className="border">
     <div className="border">
         <h5>hello</h5>
     </div>
-    <FunctionComponent name="function" />
-    <ClassComponent name="class" />
+    {/* <FunctionComponent name="function" />
+    <ClassComponent name="class" /> */}
     <>
         <span>123</span>
         <span>456</span>
     </>
 
-   { [1,2,3].map(item=>{
+   {/* { [1,2,3].map(item=>{
         return (<div className="border" key={item}>
             <p>{item}</p>
             <p>item</p>
         </div>)
-    })}
+    })} */}
 </div>
 
 
