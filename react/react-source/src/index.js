@@ -1,9 +1,9 @@
-// import React from "react";
-// import ReactDOM from "react-dom";
-import React from './lReact'
-import ReactDOM from './lReact/ReactDOM'
+import React,{Component} from "react";
+import ReactDOM from "react-dom";
+// import React from './lReact'
+// import ReactDOM from './lReact/ReactDOM'
 import "./index.css";
-import { Component } from './lReact/Component';
+// import { Component } from './lReact/Component';
 
 
 function FunctionComponent({ name }) {
@@ -13,9 +13,15 @@ function FunctionComponent({ name }) {
 }
 
 class ClassComponent extends Component {
+    state = {
+        count:0
+    }
     render() {
         const { name } = this.props
-        return <div className="border function">hello,{name}</div>
+        return <div className="border function">hello,{name}
+            <p>the count:{this.state.count}</p>
+            <button onClick={()=>this.setState({count:this.state.count+1})}>add</button>
+        </div>
     }
 }
 const jsx = <div className="border">
