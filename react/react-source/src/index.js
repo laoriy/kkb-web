@@ -2,6 +2,7 @@
 // import ReactDOM from "react-dom";
 import React from './lReact'
 import ReactDOM from './lReact/ReactDOM'
+// import ReactDOM from './lReact/ReactDOMFiber'
 import "./index.css";
 import { Component } from './lReact/Component';
 
@@ -14,13 +15,13 @@ function FunctionComponent({ name }) {
 
 class ClassComponent extends Component {
     state = {
-        count:0
+        count: 0
     }
     render() {
         const { name } = this.props
         return <div className="border function">hello,{name}
             <p>the count:{this.state.count}</p>
-            <button onClick={()=>this.setState({count:this.state.count+1})}>add</button>
+            <button onClick={() => this.setState({ count: this.state.count + 1 })}>add</button>
         </div>
     }
 }
@@ -30,14 +31,14 @@ const jsx = <div className="border">
     <div className="border">
         <h5>hello</h5>
     </div>
-    {/* <FunctionComponent name="function" />
-    <ClassComponent name="class" /> */}
-    <>
-        <span>123</span>
-        <span>456</span>
-    </>
+    <FunctionComponent name="function" />
+    <ClassComponent name="class" />
+    {/* <> */}
+    <span>123</span>
+    <span>456</span>
+    {/* </> */}
 
-   {/* { [1,2,3].map(item=>{
+    {/* { [1,2,3].map(item=>{
         return (<div className="border" key={item}>
             <p>{item}</p>
             <p>item</p>
