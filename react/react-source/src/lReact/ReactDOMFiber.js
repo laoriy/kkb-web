@@ -28,6 +28,7 @@ function reconcilerChildren(workInProgressFiber, children) {
     let oldFiber = workInProgressFiber.base && workInProgressFiber.base.child
     for (let i = 0; i < children.length; i++) {
         const child = children[i]
+
         let newFiber = null
         // todo 比较type key
         newFiber = {
@@ -50,6 +51,8 @@ function reconcilerChildren(workInProgressFiber, children) {
         }
         prevSibling = newFiber
         // sibling
+
+
     }
 }
 
@@ -96,8 +99,13 @@ function updateHostComponent(fiber) {
         fiber.node = createNode(fiber)
     }
     const { children } = fiber.props
+    reconcilerChildren(fiber, children.flat()) //如果children的子元素仍是数组就要拍平
+}
+function updateFragmentComponent(fiber) {
+    const { children } = fiber.props
     reconcilerChildren(fiber, children)
 }
+
 
 function performUnitOfWork(fiber) {
     // 执行当前子任务
@@ -106,8 +114,10 @@ function performUnitOfWork(fiber) {
         type.isReactComponent ?
             updateClassComponent(fiber) :
             updateFunctionComponent(fiber)
-    } else {
+    } else if (type) {
         updateHostComponent(fiber)
+    } else {
+        updateFragmentComponent(fiber)
     }
     // 返回下一个子任务
     // 找到下个任务的原则，先找子元素

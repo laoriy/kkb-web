@@ -1,8 +1,8 @@
 // import React,{Component} from "react";
 // import ReactDOM from "react-dom";
 import React from './lReact'
-import ReactDOM from './lReact/ReactDOM'
-// import ReactDOM from './lReact/ReactDOMFiber'
+// import ReactDOM from './lReact/ReactDOM'
+import ReactDOM from './lReact/ReactDOMFiber'
 import "./index.css";
 import { Component } from './lReact/Component';
 
@@ -33,17 +33,16 @@ const jsx = <div className="border">
     </div>
     <FunctionComponent name="function" />
     <ClassComponent name="class" />
-    {/* <> */}
-    <span>123</span>
-    <span>456</span>
-    {/* </> */}
-
-    {/* { [1,2,3].map(item=>{
+    <>
+        <span>123</span>
+        <span>456</span>
+    </>
+    {[1, 2, 3].map(item => {
         return (<div className="border" key={item}>
             <p>{item}</p>
             <p>item</p>
         </div>)
-    })} */}
+    })}
 </div>
 
 
