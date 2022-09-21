@@ -2,13 +2,23 @@
 // import ReactDOM from "react-dom";
 import React from './lReact'
 // import ReactDOM from './lReact/ReactDOM'
-import ReactDOM from './lReact/ReactDOMFiber'
+import ReactDOM, { useState } from './lReact/ReactDOMFiber'
 import "./index.css";
 import { Component } from './lReact/Component';
 
 
 function FunctionComponent({ name }) {
+    const [count, setCount] = useState(0)
+    const obj = count % 2 ? {
+        className: 'red'
+    } : {
+        onClick: () => console.log('00--')
+    }
     return <div className="border function">this is FunctionComponent,hello {name}
+        <div>
+            <div {...obj}>oo</div>
+            <button onClick={() => setCount(count + 1)}>count-{count}</button>
+        </div>
         <button onClick={() => console.log('123')}>click</button>
     </div>
 }
