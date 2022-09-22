@@ -15,6 +15,12 @@ function FunctionComponent({ name }) {
         onClick: () => console.log('00--')
     }
     return <div className="border function">this is FunctionComponent,hello {name}
+        <div className="green">
+            {
+                count % 2 === 0 ? <button onClick={() => console.log('omg')}>omg</button> : <div>omg</div>
+            }
+        </div>
+
         <div>
             <div {...obj}>oo</div>
             <button onClick={() => setCount(count + 1)}>count-{count}</button>

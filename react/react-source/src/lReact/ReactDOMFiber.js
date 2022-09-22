@@ -1,4 +1,4 @@
-import { PLACEMENT, UPDATE } from "./constants"
+import { DELETIONS, PLACEMENT, UPDATE } from "./constants"
 
 //下一个子任务
 let nextUnitOfWork = null
@@ -6,9 +6,22 @@ let wipRoot = null // work in progress
 let currentRoot = null // 现在的根节点
 let wipFiber = null // 当前正在工作的fiber
 let hookIndex = null
+let deletions = null // 存放删除fiber的数组
 
 // 更新节点属性，如className,nodeValue等
-function updateNode(node, nextVal) {
+function updateNode(node, preVal, nextVal) {
+    Object.keys(preVal).filter(key => key !== 'children').forEach(key => {
+        if (key.slice(0, 2) === 'on') {
+            // 以on 开头就是事件（源码复杂一些）
+            let eventName = key.slice(2).toLowerCase()
+            node.removeEventListener(eventName, preVal[key])
+        } else {
+            if (!(key in nextVal)) {
+                node[key] = ''
+            }
+        }
+
+    })
     Object.keys(nextVal).filter(key => key !== 'children').forEach(key => {
         if (key.slice(0, 2) === 'on') {
             // 以on 开头就是事件（源码复杂一些）
@@ -55,7 +68,9 @@ function reconcilerChildren(workInProgressFiber, children) {
         }
 
         if (!sameType && oldFiber) {
-
+            // 有个删除数组，每次push打了删除tag的fiber进去，最后提交
+            oldFiber.effectTag = DELETIONS
+            deletions.push(oldFiber)
         }
 
         if (oldFiber) {
@@ -100,9 +115,17 @@ function createNode(vnode) {
     } else if (type) {
         node = document.createElement(type)
     }
-    updateNode(node, props)
+    updateNode(node, {}, props)
 
     return node
+
+}
+function commitDeletion(fiber, parentNode) {
+    if (fiber.node) {
+        parentNode.removeChild(fiber.node)
+    } else {
+        commitDeletion(fiber.child, parentNode)
+    }
 
 }
 
@@ -113,6 +136,7 @@ function render(vnode, container) {
         props: { children: [vnode] },
         base: currentRoot,
     }
+    deletions = []
     nextUnitOfWork = wipRoot
 }
 
@@ -169,7 +193,9 @@ function commitWorker(fiber) {
     if (fiber.effectTag === PLACEMENT && fiber.node !== null) {
         parentNode.appendChild(fiber.node)
     } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
-        updateNode(fiber.node, fiber.props)
+        updateNode(fiber.node, fiber.base.props, fiber.props)
+    } else if (fiber.effectTag === DELETIONS && fiber.node !== null) {
+        commitDeletion(fiber, parentNode)
     }
 
     commitWorker(fiber.child)
@@ -177,6 +203,7 @@ function commitWorker(fiber) {
 }
 
 function commitRoot() {
+    deletions.forEach(commitWorker)
     commitWorker(wipRoot.child)
     currentRoot = wipRoot
     wipRoot = null
@@ -223,6 +250,7 @@ export function useState(init) {
             base: currentRoot
         }
         nextUnitOfWork = wipRoot
+        deletions = []
     }
     wipFiber.hooks.push(hook)
     hookIndex++
