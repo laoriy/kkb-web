@@ -10,6 +10,7 @@ export default class Route extends Component {
             children,
             render,
             location: _location,
+            computedMatch
         } = this.props;
 
         return (
@@ -17,7 +18,7 @@ export default class Route extends Component {
                 {(context) => {
                     // const match = context.location.pathname === path
                     const location = _location || context.location;
-                    const match = matchPath(location.pathname, this.props);
+                    const match = computedMatch ? computedMatch : path ? matchPath(location.pathname, this.props) : context.match;
 
                     const props = {
                         ...context,

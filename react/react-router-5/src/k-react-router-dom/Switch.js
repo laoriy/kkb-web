@@ -18,7 +18,7 @@ export default class Switch extends Component {
                             match = path ? matchPath(location.pathname, { ...child.props }) : context.match
                         }
                     })
-                    return match ? React.cloneElement(element, { location }) : null
+                    return match ? React.cloneElement(element, { location, computedMatch: match }) : null
                     // 404 待定
                 }}
             </RouteContext.Consumer>

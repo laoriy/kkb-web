@@ -2873,6 +2873,7 @@ function updateContextProvider(
   if (oldProps !== null) {
     const oldValue = oldProps.value;
     const changedBits = calculateChangedBits(context, newValue, oldValue);
+    console.log(changedBits,'changedBits');
     if (changedBits === 0) {
       // No change. Bailout early if children are the same.
       if (
