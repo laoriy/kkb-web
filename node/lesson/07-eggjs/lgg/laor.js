@@ -1,9 +1,11 @@
 const koa = require('koa')
-const { initRouter, initController, initService } = require('./laor-loader')
+const { initRouter, initController, initService, loadConfig, initSchedule } = require('./laor-loader')
 
 class laor {
     constructor(conf) {
         this.$app = new koa(conf)
+        loadConfig(this)
+        initSchedule()
         this.$service = initService(this)
         this.$ctrl = initController(this)
         this.$router = initRouter(this)

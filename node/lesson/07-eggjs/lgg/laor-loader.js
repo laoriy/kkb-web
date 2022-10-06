@@ -67,10 +67,43 @@ function initService(app) {
     const services = {}
 
     load('service', (filename, service) => {
-        services[filename] = service
+        services[filename] = service(app)
     })
 
     return services
 }
 
-module.exports = { initRouter, initController, initService }
+
+const Sequelize = require('sequelize')
+
+function loadConfig(app) {
+    load('config', (filename, config) => {
+        if (config.db) {
+            app.$db = new Sequelize(config.db)
+            // 加载模型
+            app.$model = {}
+            load('model', (filename, { schema, options }) => {
+                app.$model[filename] = app.$db.define(filename, schema, options)
+            })
+
+            app.$db.sync()
+        }
+
+        if (config.middleware) {
+            config.middleware.forEach(mid => {
+                const midPath = path.resolve(__dirname, 'middleware', mid)
+                app.$app.use(require(midPath))
+            })
+        }
+    })
+}
+
+
+const schedule = require('node-schedule')
+function initSchedule() {
+    load('schedule', (filename, scheduleConfig) => {
+        schedule.scheduleJob(scheduleConfig.interval, scheduleConfig.handler)
+    })
+}
+
+module.exports = { initRouter, initController, initService, loadConfig, initSchedule }
