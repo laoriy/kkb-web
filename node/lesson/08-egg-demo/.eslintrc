@@ -1,0 +1,8 @@
+{
+    "extends": "eslint-config-egg",
+    "root": true,
+    "rules": {
+        "indent": ["error", 4],
+        "array-bracket-spacing": ["error", "never"]
+    }
+}
