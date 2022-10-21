@@ -1,0 +1,6 @@
+<!--pages/books/books.wxml-->
+<text>图书列表</text>
+<view wx:for="{{books}}"  wx:key="id">
+	<view>{{index}}</view>
+	<view>{{item.title}}</view>
+</view>

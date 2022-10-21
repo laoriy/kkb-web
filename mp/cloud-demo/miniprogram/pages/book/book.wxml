@@ -1,0 +1,5 @@
+<!--pages/book/book.wxml-->
+<text>扫码图书</text>
+
+<button type="primary" bindtap="scanCode">扫码识别图书</button>
+<button type="primary" bindtap="toList">查看列表</button>

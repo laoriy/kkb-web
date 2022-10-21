@@ -1,0 +1,10 @@
+<!--index.wxml-->
+<view class="container">
+  <camera device-position="back" style="width: 100%; height: 300px;"></camera>
+  <view>
+    <button type="primary" bindtap="takePhoto">拍照</button>
+    <button open-type="contact" type="primary">客服</button>
+    <image src="{{avatar}}" mode="widthFix"></image>
+
+  </view>
+</view>

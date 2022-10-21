@@ -1,0 +1,32 @@
+{
+	"miniprogramRoot": "client/dist/",
+	"cloudfunctionRoot": "cloud/functions/",
+	"projectname": "taro-demo",
+	"description": "learn taro",
+	"appid": "wx69905209879d49f9",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"enhance": false,
+		"compileHotReLoad": false,
+		"postcss": false,
+		"minified": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.27.0",
+	"srcMiniprogramRoot": "client/dist/",
+	"packOptions": {
+		"ignore": [],
+		"include": []
+	},
+	"condition": {},
+	"editorSetting": {
+		"tabIndent": "tab",
+		"tabSize": 4
+	}
+}
