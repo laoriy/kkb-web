@@ -41,7 +41,7 @@ router.get('/getTokens', async ctx => {
 //     console.log('getFollowers:',res)
 //     ctx.body = res.data
 // })
-const { ServerToken } = require('./mongoose')
+const { ServerToken, ClientToken } = require('./mongoose')
 
 const WechatAPI = require('co-wechat-api')
 const api = new WechatAPI(
@@ -55,6 +55,61 @@ const api = new WechatAPI(
 router.get('/getFollowers', async ctx => {
     let res = await api.getFollowers()
     res = await api.batchGetUsers(res.data.openid, 'zh_CN')
+    ctx.body = res
+})
+
+const oAuth = require('co-wechat-oauth')
+const oauth = new oAuth(conf.appid, conf.appsecret,
+    async function (openid) {
+        return await ClientToken.getToken(openid)
+    },
+    async function (openid, token) {
+        return await ClientToken.setToken(openid, token)
+    }
+)
+
+router.get('/wxAuthorize', async (ctx, next) => {
+    const state = ctx.query.id
+
+    // 回调地址
+    const { protocol, hostname } = new URL(ctx.href)
+    console.log('protocol', protocol, hostname, state);
+    const redirect = `${protocol}//${hostname}/wxCallback`
+    const scope = 'snsapi_userinfo'
+    const url = oauth.getAuthorizeURL(redirect, state, scope)
+    console.log('url:' + url);
+
+    ctx.redirect(url)
+})
+
+
+router.get('/wxCallback', async ctx => {
+    const code = ctx.query.code
+    console.log('getAccessToken...', code);
+    const token = await oauth.getAccessToken(code)
+
+    const accessToken = token.data.access_token
+
+    const openid = token.data.openid
+    // 增加本地授权
+    ctx.redirect('/?openid=' + openid)
+})
+
+
+
+router.get('/getUser', async ctx => {
+    const openid = ctx.query.openid
+
+    console.log('/getUser...');
+    const userInfo = await oauth.getUser(openid)
+    ctx.body = userInfo
+})
+
+
+router.get('/getJsConfig', async ctx => {
+    console.log(ctx.query);
+    const res = await api.getJsConfig(ctx.query)
+    console.log(res, 'res');
     ctx.body = res
 })
 
