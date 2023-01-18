@@ -16,18 +16,18 @@ function counterReducer(state = 0, action: Action) {
 }
 
 function logger() {
-  return (dispatch: any) => (action: any) => {
+  return (next: any) => (action: any) => {
     console.log("执行了" + action.type);
-    return dispatch(action);
+    return next(action);
   };
 }
 
 function thunk({ getState }: any) {
-  return (dispatch: any) => (action: any) => {
+  return (next: any) => (action: any) => {
     if (typeof action === "function") {
-      return action(dispatch, getState);
+      return action(next, getState);
     } else {
-      return dispatch(action);
+      return next(action);
     }
   };
 }
